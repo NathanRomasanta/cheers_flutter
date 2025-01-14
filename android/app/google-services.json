@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "519145971888",
+    "project_id": "cheers-f9c26",
+    "storage_bucket": "cheers-f9c26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519145971888:android:529a961c465b2007c3db75",
+        "android_client_info": {
+          "package_name": "com.example.cheers_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519145971888-is5ssk039pnj6n44g7q67ev17gc9eg5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfXl5-jhhioR5yOywO2hhaYCa_v4n9g7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519145971888-is5ssk039pnj6n44g7q67ev17gc9eg5v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "519145971888-sjhcig884jabsp3qcprm26q053oakkj8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cheersFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
