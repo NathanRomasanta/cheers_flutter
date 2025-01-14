@@ -2,6 +2,7 @@ import 'package:cheers_flutter/pages/Admin%20pages/AdminCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminHome.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminInventory.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminItemCreation.dart';
+import 'package:cheers_flutter/pages/Admin%20pages/AdminPOSItemCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminSettings.dart';
 import 'package:cheers_flutter/pages/Menu.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
@@ -17,50 +18,41 @@ class AdminNavigator extends StatefulWidget {
 
 //adding comments just to test
 class _AdminNavigatorState extends State<AdminNavigator> {
-  int currentPage = 0;
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
-        home: NavigationView(
+    return NavigationView(
       pane: NavigationPane(
-          toggleable: true,
-          displayMode: PaneDisplayMode.auto,
-          size: const NavigationPaneSize(
-            openMaxWidth: 200,
-          ),
-          header: Container(
-            child: SizedBox(height: 50),
-          ),
-          items: [
-            PaneItem(
-                icon: const Icon(Icons.folder),
-                title: const Text("Home"),
-                body: const AdminHome()),
-            PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text("Settings"),
-                body: const AdminSettings()),
-            PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text("Creation"),
-                body: const AdminCreation()),
-            PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text("Item Creation"),
-                body: const AdminCreation()),
-            PaneItem(
-                icon: const Icon(FluentIcons.add),
-                title: const Text("Item Creation"),
-                body: const AdminItemCreation()),
-            PaneItem(
-                icon: const Icon(FluentIcons.stock_down),
-                title: const Text("Item Inventory"),
-                body: const AdminInventoryScreen()),
-          ],
-          selected: currentPage,
-          onChanged: (index) => setState(() {
-                currentPage = index;
-              })),
-    ));
+        displayMode: PaneDisplayMode.auto,
+        selected: _selectedIndex,
+        onChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          PaneItem(
+              icon: const Icon(FluentIcons.home),
+              title: const Text('Home'),
+              body: const AdminHome()),
+          PaneItem(
+              icon: const Icon(FluentIcons.contact),
+              title: const Text('Profile'),
+              body: const AdminInventoryScreen()),
+          PaneItem(
+              icon: const Icon(FluentIcons.contact),
+              title: const Text('Add User'),
+              body: const AdminCreation()),
+          PaneItem(
+              icon: const Icon(FluentIcons.settings),
+              title: const Text('POS Item Creation'),
+              body: const POSItemCreationScreen()),
+          PaneItem(
+              icon: const Icon(FluentIcons.settings),
+              title: const Text('Settings'),
+              body: const AdminSettings()),
+        ],
+      ),
+    );
   }
 }

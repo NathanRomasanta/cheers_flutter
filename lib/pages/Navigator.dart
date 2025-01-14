@@ -22,7 +22,7 @@ class _NavigatorGateState extends State<NavigatorGate> {
             PaneItem(
                 icon: const Icon(Icons.folder),
                 title: const Text("Home"),
-                body: const MenuScreen()),
+                body: POSPage()),
             PaneItem(
                 icon: const Icon(FluentIcons.home),
                 title: const Text("Home"),

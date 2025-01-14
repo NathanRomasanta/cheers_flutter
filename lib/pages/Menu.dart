@@ -4,65 +4,152 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
-
-  //test push
-
-  //another test push
+class POSPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    final FirebaseService firebaseService = FirebaseService();
+  _POSPageState createState() => _POSPageState();
+}
 
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-          stream: firebaseService.getItemsStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List notesList = snapshot.data!.docs;
+class _POSPageState extends State<POSPage> {
+  List<Map<String, dynamic>> checkout = [];
 
-              return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: notesList.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot document = notesList[index];
-                    String docID = document.id;
-
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
-                    String noteText = data['name'];
-                    String noteTitle = data['price'].toString();
-
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16), // Curved edges
-                      ),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(16), // Curved edges
-                        ),
-                        contentPadding: const EdgeInsets.all(20),
-                        tileColor: Colors.white,
-                        title: Text(noteTitle),
-                        subtitle: Text(noteText),
-                      ),
-                    );
-                  });
-            } else {
-              return const Text("No Notes");
-            }
-          }),
-    );
+  Future<List<Map<String, dynamic>>> fetchItems() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('Pos_Items').get();
+    return snapshot.docs
+        .map((doc) => {
+              'name': doc['name'],
+              'price': doc['price'],
+            })
+        .toList();
   }
 
-  Future signout() async {
-    try {
-      FirebaseAuth.instance.signOut();
-    } on FirebaseAuthException catch (e) {
-      Fluttertoast.showToast(
-          msg: e.message.toString(), gravity: ToastGravity.TOP);
-    }
+  void addToCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty) {
+        existingItem['quantity'] += 1;
+      } else {
+        checkout.add({...item, 'quantity': 1});
+      }
+    });
+  }
+
+  void removeFromCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty && existingItem['quantity'] > 1) {
+        existingItem['quantity'] -= 1;
+      } else {
+        checkout.removeWhere((i) => i['id'] == item['id']);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('POS System'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear_all),
+            onPressed: () => setState(() => checkout.clear()),
+          )
+        ],
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: fetchItems(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final items = snapshot.data!;
+          return Row(
+            children: [
+              // Items List
+              Expanded(
+                flex: 3,
+                child: GridView.builder(
+                  padding: EdgeInsets.all(8),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.5,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return Card(
+                      color: Colors.orange[100],
+                      child: InkWell(
+                        onTap: () => addToCheckout(item),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(item['name'],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            SizedBox(height: 8),
+                            Text('\$${item['price']}'),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Checkout Section
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: checkout.length,
+                        itemBuilder: (context, index) {
+                          final item = checkout[index];
+                          return ListTile(
+                            title: Text(item['name']),
+                            subtitle: Text(
+                                'Quantity: ${item['quantity']} - \$${(int.parse(item['price']) * item['quantity'])}'),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.remove_circle_outline),
+                                  onPressed: () => removeFromCheckout(item),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add_circle_outline),
+                                  onPressed: () => addToCheckout(item),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Handle Payment Process
+                        },
+                        child: Text('Send to Payment Pad'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
