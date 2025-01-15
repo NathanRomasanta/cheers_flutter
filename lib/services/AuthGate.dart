@@ -1,5 +1,3 @@
-import 'package:cheers_flutter/pages/Menu.dart';
-import 'package:cheers_flutter/pages/Navigator.dart';
 import 'package:cheers_flutter/pages/login.dart';
 import 'package:cheers_flutter/services/RoleGate.dart';
 import 'package:firebase_auth/firebase_auth.dart';

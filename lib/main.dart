@@ -1,6 +1,5 @@
 import 'package:cheers_flutter/services/AuthGate.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FluentApp(
       title: 'Flutter Demo',
-      theme: FluentThemeData(),
+      theme: FluentThemeData(fontFamily: 'Product Sans'),
       home: const AuthGate(),
     );
   }

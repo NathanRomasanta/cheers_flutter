@@ -1,4 +1,3 @@
-import 'package:cheers_flutter/pages/Admin%20pages/AdminHome.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminNavigator.dart';
 import 'package:cheers_flutter/pages/Navigator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

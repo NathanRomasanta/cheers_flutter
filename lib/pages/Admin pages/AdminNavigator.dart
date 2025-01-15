@@ -4,10 +4,7 @@ import 'package:cheers_flutter/pages/Admin%20pages/AdminInventory.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminItemCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminPOSItemCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminSettings.dart';
-import 'package:cheers_flutter/pages/Menu.dart';
-import 'package:cheers_flutter/pages/Settings.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
 
 class AdminNavigator extends StatefulWidget {
   const AdminNavigator({super.key});
@@ -47,6 +44,10 @@ class _AdminNavigatorState extends State<AdminNavigator> {
               icon: const Icon(FluentIcons.settings),
               title: const Text('POS Item Creation'),
               body: const POSItemCreationScreen()),
+          PaneItem(
+              icon: const Icon(FluentIcons.settings),
+              title: const Text('Inventory Creation'),
+              body: const AdminItemCreation()),
           PaneItem(
               icon: const Icon(FluentIcons.settings),
               title: const Text('Settings'),
