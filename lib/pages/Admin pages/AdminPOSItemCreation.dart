@@ -1,5 +1,7 @@
+// ignore: file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class POSItemCreationScreen extends StatefulWidget {
   const POSItemCreationScreen({super.key});
@@ -62,13 +64,10 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
         'price': price,
         'ingredients': selectedIngredients,
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Order submitted successfully')),
-      );
+      Fluttertoast.showToast(
+          msg: 'POS Item Created', gravity: ToastGravity.TOP);
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit order: $error')),
-      );
+      Fluttertoast.showToast(msg: error.toString(), gravity: ToastGravity.TOP);
     }
   }
 
@@ -76,14 +75,14 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Ingredients'),
+        title: const Text('Select Ingredients'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              decoration: InputDecoration(labelText: 'Drink Name'),
+              decoration: const InputDecoration(labelText: 'Drink Name'),
               onChanged: (value) {
                 setState(() {
                   name = value;
@@ -91,7 +90,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
               },
             ),
             TextField(
-              decoration: InputDecoration(labelText: 'Price'),
+              decoration: const InputDecoration(labelText: 'Price'),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -99,13 +98,13 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                 });
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('Select Ingredients'),
+                    title: const Text('Select Ingredients'),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: ingredients.map((ingredient) {
@@ -121,16 +120,16 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Close'),
+                        child: const Text('Close'),
                       ),
                     ],
                   ),
                 );
               },
-              child: Text('Select Ingredient'),
+              child: const Text('Select Ingredient'),
             ),
-            SizedBox(height: 20),
-            Text('Selected Ingredients:'),
+            const SizedBox(height: 20),
+            const Text('Selected Ingredients:'),
             Expanded(
               child: ListView.builder(
                 itemCount: selectedIngredients.length,
@@ -141,7 +140,8 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                         '${ingredient['name']} - \$${ingredient['price']}'),
                     subtitle: ingredient['isLiquor']
                         ? TextField(
-                            decoration: InputDecoration(labelText: 'Ounces'),
+                            decoration:
+                                const InputDecoration(labelText: 'Ounces'),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
                               _updateOunces(ingredient['id'], value);
@@ -152,10 +152,10 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitOrder,
-              child: Text('Submit Order'),
+              child: const Text('Submit Order'),
             ),
           ],
         ),
