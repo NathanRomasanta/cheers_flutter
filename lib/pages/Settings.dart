@@ -1,3 +1,4 @@
+import 'package:cheers_flutter/design/design.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -44,6 +45,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       body: Center(
           child: ElevatedButton(
+        style: CheersStyles.buttonMain,
         onPressed: () {
           _showLogoutDialog(context);
         },

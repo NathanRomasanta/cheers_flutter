@@ -20,7 +20,7 @@ class _AdminNavigatorState extends State<AdminNavigator> {
   Widget build(BuildContext context) {
     return NavigationView(
       pane: NavigationPane(
-        displayMode: PaneDisplayMode.auto,
+        displayMode: PaneDisplayMode.compact,
         selected: _selectedIndex,
         onChanged: (index) {
           setState(() {

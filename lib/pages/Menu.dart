@@ -1,3 +1,4 @@
+import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -172,17 +173,7 @@ class _POSPageState extends State<POSPage> {
                               onPressed: () {
                                 // Handle Payment Process
                               },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(
-                                    0xffFF6E1F), // Button background color
-                                foregroundColor: Colors.white, // Text color
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(30), // Curved edges
-                                ),
-                              ),
+                              style: CheersStyles.buttonMain,
                               child: const Text(
                                 'Send to Payment Pad',
                                 style: TextStyle(fontFamily: 'Product Sans'),

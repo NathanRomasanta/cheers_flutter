@@ -1,3 +1,4 @@
+import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,11 @@ class AdminItemCreation extends StatefulWidget {
 
 class _AdminItemCreationState extends State<AdminItemCreation> {
   final itemNameController = TextEditingController();
-  final itemPriceController = TextEditingController();
+  final ouncePerBottleController = TextEditingController();
   final itemQuantityController = TextEditingController();
+  final itemIDController = TextEditingController();
+
+  bool isLiquor = false;
 
   Future createItem() async {
     try {
@@ -21,9 +25,8 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Confirm Account Creation'),
-            content: const Text(
-                'Creating accounts would log out the current account, continue?'),
+            title: const Text('Confirm Item Creation'),
+            content: const Text('Are you sure you want to create this item?'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -34,16 +37,33 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await FirebaseFirestore.instance.collection("Items").add({
-                    'name': itemNameController.text.trim(),
-                    'price': itemPriceController.text.trim(),
-                    'quantity': itemQuantityController.text.trim(),
-                  });
+                  if (isLiquor == false) {
+                    //anything else that's not a liquor
+                    await FirebaseFirestore.instance.collection("Items").add({
+                      'name': itemNameController.text.trim(),
+                      'id': itemIDController.text.trim(),
+                      'isLiquor': false
+                    });
+                  } else {
+                    //liquor item add
+                    await FirebaseFirestore.instance.collection("Items").add({
+                      'name': itemNameController.text.trim(),
+                      'id': itemIDController.text.trim(),
+                      'quantity': itemQuantityController.text.trim(),
+                      'ouncePerBottle': ouncePerBottleController.text.trim(),
+                      'isLiquor': true
+                    });
+                  }
                   Fluttertoast.showToast(
                       msg: "Item Created!", gravity: ToastGravity.TOP);
+
                   itemNameController.clear();
-                  itemPriceController.clear();
+                  itemIDController.clear();
                   itemQuantityController.clear();
+                  ouncePerBottleController.clear();
+                  setState(() {
+                    isLiquor = false;
+                  });
                   Navigator.of(context).pop();
                 },
                 child: const Text('Create'),
@@ -62,33 +82,103 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(labelText: "Name"),
-            controller: itemNameController,
-          ),
-          TextField(
-            decoration: const InputDecoration(labelText: "Price"),
-            controller: itemPriceController,
-          ),
-          TextField(
-            decoration: const InputDecoration(labelText: "Quantity"),
-            controller: itemQuantityController,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                createItem();
-              },
-              child: const Text("Create Item")),
-          ElevatedButton(
-              onPressed: () {
-                Fluttertoast.showToast(msg: "Test", gravity: ToastGravity.TOP);
-              },
-              child: const Text("Flutter Toast")),
-        ],
-      )),
-    );
+        body: Padding(
+      padding: const EdgeInsets.all(50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Inventory Item Creation", style: CheersStyles.h1s),
+            const SizedBox(height: 15),
+            const Text(
+              "Item Name",
+              style: CheersStyles.inputBoxLabels,
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              width: 500,
+              child: TextField(
+                decoration: CheersStyles.inputBox,
+                controller: itemNameController,
+              ),
+            ),
+            const SizedBox(height: 15),
+            const Text(
+              "Item ID",
+              style: CheersStyles.inputBoxLabels,
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              width: 400,
+              child: TextField(
+                decoration: CheersStyles.inputBox,
+                controller: itemIDController,
+              ),
+            ),
+            const SizedBox(height: 15),
+            const Text(
+              "Is it a liquor",
+              style: CheersStyles.inputBoxLabels,
+            ),
+            Row(
+              children: [
+                const Text(
+                  "Yes",
+                  style: CheersStyles.inputBoxLabels,
+                ),
+                Checkbox(
+                  activeColor: Colors.orange,
+                  value: isLiquor,
+                  onChanged: (value) {
+                    setState(() {
+                      isLiquor = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (isLiquor) ...[
+              Row(
+                children: [
+                  const Text(
+                    "Quantity (Bottle)",
+                    style: CheersStyles.inputBoxLabels,
+                  ),
+                  const SizedBox(width: 15),
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      decoration: CheersStyles.inputBox,
+                      controller: itemQuantityController,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  const Text(
+                    "Ounce per bottle",
+                    style: CheersStyles.inputBoxLabels,
+                  ),
+                  const SizedBox(width: 15),
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      decoration: CheersStyles.inputBox,
+                      controller: ouncePerBottleController,
+                    ),
+                  ),
+                ],
+              )
+            ],
+            const SizedBox(height: 15),
+            ElevatedButton(
+                style: CheersStyles.buttonMain,
+                onPressed: () {
+                  createItem();
+                },
+                child: const Text("Create Item")),
+          ],
+        ),
+      ),
+    ));
   }
 }
