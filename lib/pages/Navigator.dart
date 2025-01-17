@@ -1,5 +1,6 @@
 import 'package:cheers_flutter/pages/Menu.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
+import 'package:cheers_flutter/pages/Stock.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,10 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 icon: const Icon(FluentIcons.home),
                 title: const Text("Home"),
                 body: const Settings()),
+            PaneItem(
+                icon: const Icon(FluentIcons.stock_down),
+                title: const Text("Stocks"),
+                body: const BarStock()),
           ],
           selected: currentPage,
           onChanged: (index) => setState(() {
