@@ -47,7 +47,9 @@ class _AdminCreationState extends State<AdminCreation> {
                     'lastName': lastNameController.text.trim(),
                     'email': emailController.text.trim(),
                     'password': passwordController.text.trim(),
-                    "Admin": isAdmin
+                    "Admin": isAdmin,
+                    'stock': {},
+                    'transactions': {}
                   });
                   FirebaseAuth.instance.signOut();
                   Navigator.of(context).pop();
