@@ -149,6 +149,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                   SizedBox(
                     width: 200,
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       decoration: CheersStyles.inputBox,
                       controller: itemQuantityController,
                     ),
@@ -162,6 +163,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                   SizedBox(
                     width: 200,
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       decoration: CheersStyles.inputBox,
                       controller: ouncePerBottleController,
                     ),
