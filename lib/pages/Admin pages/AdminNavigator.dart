@@ -2,6 +2,7 @@ import 'package:cheers_flutter/pages/Admin%20pages/AdminCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminHome.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminInventory.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminItemCreation.dart';
+import 'package:cheers_flutter/pages/Admin%20pages/AdminOrders.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminPOSItemCreation.dart';
 import 'package:cheers_flutter/pages/Admin%20pages/AdminSettings.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -20,7 +21,7 @@ class _AdminNavigatorState extends State<AdminNavigator> {
   Widget build(BuildContext context) {
     return NavigationView(
       pane: NavigationPane(
-        displayMode: PaneDisplayMode.compact,
+        //displayMode: PaneDisplayMode.compact,
         selected: _selectedIndex,
         onChanged: (index) {
           setState(() {
@@ -36,6 +37,10 @@ class _AdminNavigatorState extends State<AdminNavigator> {
               icon: const Icon(FluentIcons.contact),
               title: const Text('Profile'),
               body: const AdminInventoryScreen()),
+          PaneItem(
+              icon: const Icon(FluentIcons.admin),
+              title: const Text('Orders'),
+              body: const InventoryOrders()),
           PaneItem(
               icon: const Icon(FluentIcons.contact),
               title: const Text('Add User'),

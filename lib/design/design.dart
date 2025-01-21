@@ -16,18 +16,19 @@ class CheersStyles {
   static InputDecoration inputBoxMain = InputDecoration(
     filled: true,
     fillColor: Colors.white,
-    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+    contentPadding:
+        const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(30.0),
       borderSide: BorderSide.none,
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(30.0),
-      borderSide: BorderSide(color: Colors.orange, width: 2.0),
+      borderSide: const BorderSide(color: Colors.orange, width: 2.0),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(30.0),
-      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+      borderSide: const BorderSide(color: Colors.grey, width: 1.0),
     ),
   );
 
@@ -48,6 +49,13 @@ class CheersStyles {
     fontFamily: 'Product Sans',
     fontSize: 30,
     color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle h2s = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 20,
+    color: Colors.grey,
     fontWeight: FontWeight.w700,
   );
 

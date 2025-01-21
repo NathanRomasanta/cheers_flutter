@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BarStock extends StatefulWidget {
   const BarStock({super.key});
@@ -10,6 +11,65 @@ class BarStock extends StatefulWidget {
 }
 
 class _BarStockState extends State<BarStock> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<Map<String, dynamic>> ingredients = [];
+  List<Map<String, dynamic>> selectedIngredients = [];
+  String name = '';
+  String price = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIngredients();
+  }
+
+  // Fetch ingredients from Firestore
+  void _fetchIngredients() async {
+    QuerySnapshot querySnapshot = await _firestore.collection('Items').get();
+    setState(() {
+      ingredients = querySnapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          'name': doc['name'],
+          'isLiquor': doc['isLiquor'],
+        };
+      }).toList();
+    });
+  }
+
+  // Handle ingredient selection
+  void _selectIngredient(Map<String, dynamic> ingredient) {
+    setState(() {
+      selectedIngredients.add(ingredient);
+    });
+  }
+
+  // Handle ounces input for liquor ingredients
+  void _updateQuantity(String id, String quantity) {
+    setState(() {
+      selectedIngredients = selectedIngredients.map((ingredient) {
+        if (ingredient['id'] == id) {
+          ingredient['quantity'] = quantity;
+        }
+        return ingredient;
+      }).toList();
+    });
+  }
+
+  // Submit selected ingredients to Firestore
+  void _submitOrder() async {
+    try {
+      await _firestore.collection('Orders').add({
+        'baristaUID': user.email,
+        'ingredients': selectedIngredients,
+      });
+      Fluttertoast.showToast(
+          msg: 'POS Item Created', gravity: ToastGravity.TOP);
+    } catch (error) {
+      Fluttertoast.showToast(msg: error.toString(), gravity: ToastGravity.TOP);
+    }
+  }
+
   final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
@@ -18,86 +78,60 @@ class _BarStockState extends State<BarStock> {
         const SizedBox(
           height: 20,
         ),
-        ElevatedButton(onPressed: () {}, child: const Text("Order more stock")),
-        StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('Accounts')
-                .doc(user.email)
-                .collection('stock')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List itemList = snapshot.data!.docs;
-
-                return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: itemList.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot document = itemList[index];
-                      String docID = document.id;
-
-                      Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
-                      String itemName = data['itemName'];
-                      String itemQuantity = data['quantity'].toString();
-                      bool isLiquor = data['isLiquor'];
-
-                      if (isLiquor == true) {
-                        return Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color.fromARGB(
-                                    255, 228, 228, 228), // Border color
-                                width: 1.0, // Border width
-                              ),
-                            ),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(5),
-                            tileColor: Colors.white,
-                            title: Row(
-                              children: [
-                                Expanded(child: Text(itemName)),
-                                Expanded(child: Text(itemQuantity)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.delete))
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color.fromARGB(
-                                    255, 228, 228, 228), // Border color
-                                width: 1.0, // Border width
-                              ),
-                            ),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(5),
-                            tileColor: Colors.white,
-                            title: Row(
-                              children: [
-                                Expanded(child: Text(itemName)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.delete))
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                    });
-              } else {
-                return const Text("No Notes");
-              }
-            })
+        ElevatedButton(
+            onPressed: () {
+              _submitOrder();
+            },
+            child: const Text("Clear Form")),
+        ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Select Ingredients'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: ingredients.map((ingredient) {
+                      return ListTile(
+                        title: Text(
+                            '${ingredient['name']} - \$${ingredient['price']}'),
+                        onTap: () => _selectIngredient(ingredient),
+                      );
+                    }).toList(),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Text("Order more stock")),
+        Expanded(
+          child: ListView.builder(
+            itemCount: selectedIngredients.length,
+            itemBuilder: (context, index) {
+              var ingredient = selectedIngredients[index];
+              return ListTile(
+                title: Text('${ingredient['name']}'),
+                subtitle: ingredient['isLiquor']
+                    ? TextField(
+                        decoration:
+                            const InputDecoration(labelText: 'quantity'),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          _updateQuantity(ingredient['id'], value);
+                        },
+                      )
+                    : null,
+              );
+            },
+          ),
+        ),
       ]),
     );
   }

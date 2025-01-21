@@ -39,7 +39,10 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                 onPressed: () async {
                   if (isLiquor == false) {
                     //anything else that's not a liquor
-                    await FirebaseFirestore.instance.collection("Items").add({
+                    await FirebaseFirestore.instance
+                        .collection("Items")
+                        .doc(itemIDController.text.trim())
+                        .set({
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
                       'isLiquor': false

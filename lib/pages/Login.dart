@@ -50,12 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
       Expanded(
         flex: 1,
         child: Container(
+          width: double.infinity,
+          height: double.infinity,
           color: Colors.grey[300], // Light grey background for placeholder
           child: Center(
-            child: Text(
-              'Picture Placeholder',
-              style: TextStyle(fontSize: 20, color: Colors.grey[700]),
-            ),
+            child: Image.asset(
+              alignment: Alignment.centerLeft,
+              'lib/assets/images/Stampede_Picture.png',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ), // Display the image
           ),
         ),
       ),
@@ -74,27 +79,36 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(
-                    height: 100,
+                    height: 170,
                   ),
                   const Text('Welcome to Cheers!', style: CheersStyles.h1s),
+                  const SizedBox(height: 10),
+                  const Text('Login to your account', style: CheersStyles.h2s),
                   const SizedBox(height: 24),
-                  TextField(decoration: CheersStyles.inputBoxMain),
-                  const SizedBox(height: 16),
-                  const TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
+                  const Text(
+                    "Email",
+                    style: CheersStyles.inputBoxLabels,
                   ),
+                  const SizedBox(height: 20),
+                  TextField(
+                      controller: emailController,
+                      decoration: CheersStyles.inputBoxMain),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Password",
+                    style: CheersStyles.inputBoxLabels,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                      obscureText: true,
+                      controller: passwordController,
+                      decoration: CheersStyles.inputBoxMain),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle login logic here
+                      login();
                     },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                    ),
+                    style: CheersStyles.buttonMain,
                     child: const Text('Login'),
                   ),
                   const SizedBox(height: 16),
