@@ -46,7 +46,10 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                     });
                   } else {
                     //liquor item add
-                    await FirebaseFirestore.instance.collection("Items").add({
+                    await FirebaseFirestore.instance
+                        .collection("Items")
+                        .doc(itemIDController.text.trim())
+                        .set({
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
                       'quantity': itemQuantityController.text.trim(),

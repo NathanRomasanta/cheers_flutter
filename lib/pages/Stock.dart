@@ -15,10 +15,10 @@ class _BarStockState extends State<BarStock> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
-        ElevatedButton(onPressed: () {}, child: Text("Order more stock")),
+        ElevatedButton(onPressed: () {}, child: const Text("Order more stock")),
         StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('Accounts')

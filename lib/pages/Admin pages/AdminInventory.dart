@@ -60,7 +60,7 @@ class _AdminInventoryScreenState extends State<AdminInventoryScreen> {
                                   String itemName = data['name'];
                                   String itemQuantity =
                                       data['quantity'].toString();
-                                  String itemPrice = data['price'].toString();
+                                  String itemPrice = data['id'].toString();
 
                                   return Container(
                                     decoration: const BoxDecoration(

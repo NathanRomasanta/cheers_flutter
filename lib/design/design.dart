@@ -13,6 +13,24 @@ class CheersStyles {
     ),
   );
 
+  static InputDecoration inputBoxMain = InputDecoration(
+    filled: true,
+    fillColor: Colors.white,
+    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide(color: Colors.orange, width: 2.0),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+    ),
+  );
+
   static ButtonStyle buttonMain = ButtonStyle(
       textStyle: MaterialStateProperty.all(
           const TextStyle(fontFamily: "Product Sans")),
@@ -28,7 +46,7 @@ class CheersStyles {
 
   static const TextStyle h1s = TextStyle(
     fontFamily: 'Product Sans',
-    fontSize: 25,
+    fontSize: 30,
     color: Colors.black,
     fontWeight: FontWeight.w700,
   );

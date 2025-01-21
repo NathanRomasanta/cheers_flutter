@@ -1,5 +1,6 @@
 import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class POSPage extends StatefulWidget {
@@ -23,6 +24,9 @@ class _POSPageState extends State<POSPage> {
   }
 
   void addToCheckout(Map<String, dynamic> item) {
+    final user = FirebaseAuth.instance.currentUser!;
+    //final DocumentReference pos_Items = FirebaseFirestore.instance.collection('Accounts').doc(user.email).collection("stock");
+
     setState(() {
       final existingItem =
           checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
@@ -152,12 +156,14 @@ class _POSPageState extends State<POSPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.remove_circle_outline),
+                                        icon: const Icon(
+                                            Icons.remove_circle_outline),
                                         onPressed: () =>
                                             removeFromCheckout(item),
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.add_circle_outline),
+                                        icon: const Icon(
+                                            Icons.add_circle_outline),
                                         onPressed: () => addToCheckout(item),
                                       ),
                                     ],
