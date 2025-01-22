@@ -1,6 +1,7 @@
 import 'package:cheers_flutter/services/FirestoreService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class InventoryOrders extends StatefulWidget {
   const InventoryOrders({super.key});
@@ -11,6 +12,67 @@ class InventoryOrders extends StatefulWidget {
 
 class _InventoryOrdersState extends State<InventoryOrders> {
   final FirebaseService firebaseService = FirebaseService();
+
+  Future<void> fulfillOrder(
+      String baristaEmail, List<dynamic> orderList) async {
+    try {
+      // Access the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Get the document in the "Accounts" collection for the barista email
+      DocumentReference baristaDoc =
+          firestore.collection('Accounts').doc(baristaEmail);
+
+      CollectionReference stockCollection = baristaDoc.collection('stock');
+
+      // Process each ingredient in the order list
+      for (var ingredient in orderList) {
+        String ingredientId = ingredient['id'] ??
+            DateTime.now().toString(); // Unique ID if missing
+        String ingredientName = ingredient['name'] ?? 'Unknown';
+        int ingredientQuantity = ingredient['quantity'] ?? 1;
+        bool isLiquor = ingredient['isLiquor'] ?? false;
+
+        // Check if the ingredient already exists in the stock collection
+        DocumentSnapshot existingIngredient =
+            await stockCollection.doc(ingredientId).get();
+
+        if (existingIngredient.exists) {
+          // If the document exists, update the quantity
+          Map<String, dynamic> existingData =
+              existingIngredient.data() as Map<String, dynamic>;
+          int existingQuantity = existingData['quantity'] ?? 0;
+
+          // Update only the `quantity`, and increment `running count` for liquors
+          await stockCollection.doc(ingredientId).update({
+            'quantity': existingQuantity + ingredientQuantity,
+            if (isLiquor)
+              'running count':
+                  (existingData['running count'] ?? 0) + ingredientQuantity,
+          });
+        } else {
+          // If the document does not exist, create a new document
+          if (isLiquor) {
+            await stockCollection.doc(ingredientId).set({
+              'name': ingredientName,
+              'quantity': ingredientQuantity,
+              'running count': ingredientQuantity,
+            });
+          } else {
+            await stockCollection.doc(ingredientId).set({
+              'name': ingredientName,
+              'quantity': ingredientQuantity,
+            });
+          }
+        }
+      }
+
+      Fluttertoast.showToast(msg: "Order fulfilled successfully!");
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Failed to fulfill order: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,62 +104,113 @@ class _InventoryOrdersState extends State<InventoryOrders> {
                       ],
                     ),
                     StreamBuilder<QuerySnapshot>(
-                        stream: firebaseService.getOrdersStream(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List itemList = snapshot.data!.docs;
+                      stream: firebaseService.getOrdersStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List itemList = snapshot.data!.docs;
 
-                            return ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: itemList.length,
-                                itemBuilder: (context, index) {
-                                  DocumentSnapshot document = itemList[index];
-                                  String docID = document.id;
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: itemList.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot document = itemList[index];
+                              String docID = document.id;
 
-                                  Map<String, dynamic> data =
-                                      document.data() as Map<String, dynamic>;
-                                  String itemName = data['baristaUID'];
+                              Map<String, dynamic> data =
+                                  document.data() as Map<String, dynamic>;
+                              String itemName = data['baristaUID'];
 
-                                  List<dynamic> orderList = data['ingredients'];
-                                  int itemQuantity = orderList.length;
-                                  String itemPrice = data['id'].toString();
+                              List<dynamic> orderList =
+                                  data['ingredients']; // List of dictionaries
+                              int itemQuantity = orderList.length;
+                              String itemPrice = data['id'].toString();
 
-                                  return Container(
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Color.fromARGB(255, 228, 228,
-                                              228), // Border color
-                                          width: 1.0, // Border width
-                                        ),
-                                      ),
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Color.fromARGB(
+                                          255, 228, 228, 228), // Border color
+                                      width: 1.0, // Border width
                                     ),
-                                    child: ListTile(
-                                      contentPadding: const EdgeInsets.all(5),
-                                      tileColor: Colors.white,
-                                      title: Row(
-                                        children: [
-                                          Expanded(child: Text(itemName)),
-                                          Expanded(
-                                              child: Text(
-                                                  itemQuantity.toString())),
-                                          Expanded(child: Text(itemPrice)),
-                                          IconButton(
+                                  ),
+                                ),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.all(5),
+                                  tileColor: Colors.white,
+                                  title: Row(
+                                    children: [
+                                      Expanded(child: Text(itemName)),
+                                      Expanded(
+                                          child: Text(itemQuantity.toString())),
+                                      Expanded(child: Text(itemPrice)),
+                                      IconButton(
+                                        onPressed: () {
+                                          firebaseService.deleteItem(docID);
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    // Show the dialog box
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text("Order Details"),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Barista: $itemName"),
+                                              const SizedBox(height: 10),
+                                              const Text("Ingredients:"),
+                                              const SizedBox(height: 5),
+                                              ...orderList.map((ingredient) {
+                                                // Extract name and substitute default value for quantity if missing
+                                                String ingredientName =
+                                                    ingredient['name'] ??
+                                                        "Unknown";
+                                                int ingredientQuantity =
+                                                    ingredient['quantity'] ?? 1;
+                                                return Text(
+                                                    "- $ingredientName (x$ingredientQuantity)");
+                                              }).toList(),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
                                               onPressed: () {
-                                                firebaseService
-                                                    .deleteItem(docID);
+                                                Navigator.of(context).pop();
                                               },
-                                              icon: const Icon(Icons.delete))
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                });
-                          } else {
-                            return const Text("No Notes");
-                          }
-                        }),
+                                              child: const Text("Cancel"),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                await fulfillOrder(
+                                                    itemName, orderList);
+                                                Navigator.of(context).pop();
+                                              },
+                                              child:
+                                                  const Text("Fulfill Order"),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Text("No Notes");
+                        }
+                      },
+                    )
                   ],
                 ),
               ),

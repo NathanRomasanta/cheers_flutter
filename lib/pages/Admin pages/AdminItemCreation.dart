@@ -45,7 +45,8 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                         .set({
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
-                      'isLiquor': false
+                      'isLiquor': false,
+                      'quantity': 1
                     });
                   } else {
                     //liquor item add
@@ -55,8 +56,9 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                         .set({
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
-                      'quantity': itemQuantityController.text.trim(),
-                      'ouncePerBottle': ouncePerBottleController.text.trim(),
+                      'quantity': int.parse(itemQuantityController.text.trim()),
+                      'ouncePerBottle':
+                          int.parse(ouncePerBottleController.text.trim()),
                       'isLiquor': true
                     });
                   }

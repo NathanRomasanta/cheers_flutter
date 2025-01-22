@@ -45,7 +45,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   }
 
   // Handle ounces input for liquor ingredients
-  void _updateOunces(String id, String ounces) {
+  void _updateOunces(String id, int ounces) {
     setState(() {
       selectedIngredients = selectedIngredients.map((ingredient) {
         if (ingredient['id'] == id) {
@@ -61,7 +61,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
     try {
       await _firestore.collection('Pos_Items').add({
         'name': name,
-        'price': price,
+        'price': int.parse(price),
         'ingredients': selectedIngredients,
       });
       Fluttertoast.showToast(
@@ -144,7 +144,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                                 const InputDecoration(labelText: 'Ounces'),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
-                              _updateOunces(ingredient['id'], value);
+                              _updateOunces(ingredient['id'], int.parse(value));
                             },
                           )
                         : null,

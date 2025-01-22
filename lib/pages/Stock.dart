@@ -32,6 +32,7 @@ class _BarStockState extends State<BarStock> {
           'id': doc.id,
           'name': doc['name'],
           'isLiquor': doc['isLiquor'],
+          'quantity': doc['quantity']
         };
       }).toList();
     });
@@ -45,7 +46,7 @@ class _BarStockState extends State<BarStock> {
   }
 
   // Handle ounces input for liquor ingredients
-  void _updateQuantity(String id, String quantity) {
+  void _updateQuantity(String id, int quantity) {
     setState(() {
       selectedIngredients = selectedIngredients.map((ingredient) {
         if (ingredient['id'] == id) {
@@ -93,8 +94,7 @@ class _BarStockState extends State<BarStock> {
                     mainAxisSize: MainAxisSize.min,
                     children: ingredients.map((ingredient) {
                       return ListTile(
-                        title: Text(
-                            '${ingredient['name']} - \$${ingredient['price']}'),
+                        title: Text('${ingredient['name']}'),
                         onTap: () => _selectIngredient(ingredient),
                       );
                     }).toList(),
@@ -124,7 +124,7 @@ class _BarStockState extends State<BarStock> {
                             const InputDecoration(labelText: 'quantity'),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
-                          _updateQuantity(ingredient['id'], value);
+                          _updateQuantity(ingredient['id'], int.parse(value));
                         },
                       )
                     : null,
