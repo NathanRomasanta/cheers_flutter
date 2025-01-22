@@ -14,7 +14,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
   final FirebaseService firebaseService = FirebaseService();
 
   Future<void> fulfillOrder(
-      String baristaEmail, List<dynamic> orderList) async {
+      String baristaEmail, List<dynamic> orderList, String orderDocID) async {
     try {
       // Access the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -68,6 +68,8 @@ class _InventoryOrdersState extends State<InventoryOrders> {
       }
 
       Fluttertoast.showToast(msg: "Order fulfilled successfully!");
+
+      await firestore.collection('Orders').doc(orderDocID).delete();
     } catch (e) {
       Fluttertoast.showToast(msg: "Failed to fulfill order: $e");
     }
@@ -191,7 +193,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
                                             ElevatedButton(
                                               onPressed: () async {
                                                 await fulfillOrder(
-                                                    itemName, orderList);
+                                                    itemName, orderList, docID);
                                                 Navigator.of(context).pop();
                                               },
                                               child:
