@@ -2,6 +2,7 @@ import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class POSPage extends StatefulWidget {
   @override
@@ -10,7 +11,10 @@ class POSPage extends StatefulWidget {
 
 class _POSPageState extends State<POSPage> {
   List<Map<String, dynamic>> checkout = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser!;
 
+  double total = 0;
   Future<List<Map<String, dynamic>>> fetchItems() async {
     final snapshot =
         await FirebaseFirestore.instance.collection('Pos_Items').get();
@@ -32,10 +36,32 @@ class _POSPageState extends State<POSPage> {
           checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
       if (existingItem.isNotEmpty) {
         existingItem['quantity'] += 1;
+
+        total = total + (existingItem['price']);
       } else {
         checkout.add({...item, 'quantity': 1});
+        total = total + (item['price']);
       }
     });
+  }
+
+  void _addToTransactions() async {
+    try {
+      await _firestore
+          .collection('Accounts')
+          .doc(user.email)
+          .collection("transactions")
+          .add({
+        'time': Timestamp.now(),
+        'baristaUID': user.email,
+        'total': total,
+        'items': checkout,
+      });
+      Fluttertoast.showToast(
+          msg: 'Transaction Done', gravity: ToastGravity.TOP);
+    } catch (error) {
+      Fluttertoast.showToast(msg: error.toString(), gravity: ToastGravity.TOP);
+    }
   }
 
   void removeFromCheckout(Map<String, dynamic> item) {
@@ -44,8 +70,11 @@ class _POSPageState extends State<POSPage> {
           checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
       if (existingItem.isNotEmpty && existingItem['quantity'] > 1) {
         existingItem['quantity'] -= 1;
+        total = total - (existingItem['price']);
       } else {
         checkout.removeWhere((i) => i['id'] == item['id']);
+
+        total = total - (item['price']);
       }
     });
   }
@@ -151,7 +180,7 @@ class _POSPageState extends State<POSPage> {
                                 return ListTile(
                                   title: Text(item['name']),
                                   subtitle: Text(
-                                      'Quantity: ${item['quantity']} - \$${(int.parse(item['price']) * item['quantity'])}'),
+                                      'Quantity: ${item['quantity']} - \$${(item['price'] * item['quantity'])}'),
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -172,12 +201,13 @@ class _POSPageState extends State<POSPage> {
                               },
                             ),
                           ),
+                          Text(total.toString()),
                           const Divider(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                // Handle Payment Process
+                                _addToTransactions();
                               },
                               style: CheersStyles.buttonMain,
                               child: const Text(

@@ -18,23 +18,31 @@ class _NavigatorGateState extends State<NavigatorGate> {
     return FluentApp(
         home: NavigationView(
       pane: NavigationPane(
-          size: const NavigationPaneSize(compactWidth: 80),
+          size: const NavigationPaneSize(compactWidth: 60),
           displayMode: PaneDisplayMode.compact,
           items: [
             PaneItem(
                 icon: const Icon(
                   Icons.point_of_sale,
                   color: Color(0xffFF6E1F),
-                  size: 30,
+                  size: 25,
                 ),
                 title: const Text("Home"),
                 body: POSPage()),
             PaneItem(
-                icon: const Icon(FluentIcons.home),
+                icon: const Icon(
+                  Icons.settings,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
                 title: const Text("Home"),
                 body: const Settings()),
             PaneItem(
-                icon: const Icon(FluentIcons.stock_down),
+                icon: const Icon(
+                  Icons.table_chart,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
                 title: const Text("Stocks"),
                 body: const BarStock()),
           ],

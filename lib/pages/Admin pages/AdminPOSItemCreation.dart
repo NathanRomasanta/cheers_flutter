@@ -16,6 +16,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   List<Map<String, dynamic>> selectedIngredients = [];
   String name = '';
   String price = '';
+  double total = 0;
 
   @override
   void initState() {
