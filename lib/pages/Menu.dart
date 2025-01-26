@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class POSPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _POSPageState createState() => _POSPageState();
 }
 
@@ -28,7 +29,6 @@ class _POSPageState extends State<POSPage> {
   }
 
   void addToCheckout(Map<String, dynamic> item) {
-    final user = FirebaseAuth.instance.currentUser!;
     //final DocumentReference pos_Items = FirebaseFirestore.instance.collection('Accounts').doc(user.email).collection("stock");
 
     setState(() {
