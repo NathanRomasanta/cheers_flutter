@@ -62,30 +62,131 @@ class _POSPageState extends State<POSPage> {
     });
   }
 
-  void testfunction() async {
+  void testFunction() async {
+    // Step 1: Reference Firestore stock collection
     CollectionReference<Map<String, dynamic>> stockCollection =
         FirebaseFirestore.instance
             .collection('Accounts')
             .doc(user.email)
             .collection('stock');
 
-// Step 2: Fetch data from the collection (you need to await the future)
-    final snapshot =
-        await stockCollection.get(); // This returns a Future<QuerySnapshot>
-
-// Step 3: Map the query snapshot to a list of documents
+    // Step 2: Fetch data from the stock collection
+    final snapshot = await stockCollection.get(); // Retrieve stock data
     final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
       return doc.data(); // Convert each document's data to a Map
     }).toList();
-    for (var items in checkout) {
-      print(items['ingredients']);
+
+    // Step 3: Iterate over the checkout list and check stock
+    bool isStockSufficient = true; // To track if stock is enough for all drinks
+
+    List<Map<String, dynamic>> neededIngredients = [];
+
+    print(checkout);
+
+    for (var drink in checkout) {
+      List ingredients = drink['ingredients'];
+
+      int quantity = drink['quantity'];
+      for (var ingredient in ingredients) {
+        String ingredientName = ingredient['id'];
+        bool isLiquor = ingredient['isLiquor'];
+        int ounces = ingredient['ounces'] ?? 0;
+
+        // Check if the ingredient is already in the neededIngredients list
+        var existingIngredient = neededIngredients.firstWhere(
+          (item) => item['id'] == ingredientName,
+          orElse: () => {},
+        );
+
+        if (existingIngredient.isNotEmpty) {
+          // If found, add ounces only if isLiquor is true
+          if (isLiquor) {
+            existingIngredient['ounces'] += ounces;
+          }
+        } else {
+          neededIngredients.add({
+            'id': ingredientName,
+            'isLiquor': isLiquor,
+            'ounces': isLiquor ? ounces * quantity : 0,
+          });
+        }
+      }
+
+      print(stockList);
     }
 
-    for (var items in stockList) {
+    for (var items in neededIngredients) {
       print(items);
     }
 
-    //stock checking
+    for (var needed in neededIngredients) {
+      double neededOunces =
+          double.parse(needed['ounces'].toString()); // Ensure it's a double
+
+      // Find matching item in stockList
+      var stockItem = stockList.firstWhere(
+        (item) =>
+            item['id'].toString() ==
+            needed['id'].toString(), // Ensure comparison is done as Strings
+        orElse: () => {}, // Return an empty map if not found
+      );
+
+      if (stockItem.isNotEmpty) {
+        if (needed['isLiquor'] == true) {
+          // Ensure correct type conversion to double for ouncesPerBottle and runningCount
+          double ouncesPerBottle =
+              double.parse(stockItem['ouncesPerBottle'].toString());
+          double runningCount =
+              double.parse(stockItem['runningCount'].toString());
+
+          double totalOunces = ouncesPerBottle * runningCount;
+
+          if (neededOunces <= totalOunces) {
+            stockItem['runningCount'] =
+                ((runningCount * ouncesPerBottle) - neededOunces) /
+                    ouncesPerBottle;
+
+            try {
+              await _firestore
+                  .collection('Accounts')
+                  .doc(user.email)
+                  .collection("stock")
+                  .doc(stockItem['id']
+                      .toString()) // Ensure document ID is a string
+                  .update({
+                'runningCount': stockItem['runningCount'],
+              });
+              Fluttertoast.showToast(
+                  msg: 'Transaction Done', gravity: ToastGravity.TOP);
+            } catch (error) {
+              Fluttertoast.showToast(
+                  msg: error.toString(), gravity: ToastGravity.TOP);
+            }
+          } else {
+            print('Not sufficient for ${needed['id']}');
+          }
+        }
+      } else {
+        print('No stock found for ${needed['id']}');
+        isStockSufficient = false; // Mark stock as insufficient
+      }
+    }
+
+// Step 4: Proceed to the next steps if stock is sufficient
+    if (isStockSufficient) {
+      proceedToNextStep(); // Define what happens next in your workflow
+    }
+  }
+
+// Helper function to send notifications
+  void sendNotification(String message) {
+    print("Notification: $message");
+    // Add your actual notification logic here (e.g., Firebase Cloud Messaging)
+  }
+
+// Placeholder function for the next steps
+  void proceedToNextStep() {
+    print("Stock is sufficient. Proceeding to the next step...");
   }
 
   void _addToTransactions() async {
@@ -266,7 +367,7 @@ class _POSPageState extends State<POSPage> {
                             child: ElevatedButton(
                               onPressed: () {
                                 //_addToTransactions();
-                                testfunction();
+                                testFunction();
                               },
                               style: CheersStyles.buttonMain,
                               child: const Text(
