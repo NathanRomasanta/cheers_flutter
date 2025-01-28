@@ -24,6 +24,23 @@ class _POSPageState extends State<POSPage> {
               'id': doc.id,
               'name': doc['name'],
               'price': doc['price'],
+              'ingredients': doc['ingredients'],
+            })
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchStock() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Accounts')
+        .doc(user.email)
+        .collection('stock')
+        .get();
+    return snapshot.docs
+        .map((doc) => {
+              'id': doc.id,
+              'name': doc['name'] ?? '',
+              'price': doc['price'],
+              'ingredients': doc['ingredients'],
             })
         .toList();
   }
@@ -45,7 +62,48 @@ class _POSPageState extends State<POSPage> {
     });
   }
 
+  void testfunction() async {
+    CollectionReference<Map<String, dynamic>> stockCollection =
+        FirebaseFirestore.instance
+            .collection('Accounts')
+            .doc(user.email)
+            .collection('stock');
+
+// Step 2: Fetch data from the collection (you need to await the future)
+    final snapshot =
+        await stockCollection.get(); // This returns a Future<QuerySnapshot>
+
+// Step 3: Map the query snapshot to a list of documents
+    final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
+      return doc.data(); // Convert each document's data to a Map
+    }).toList();
+    for (var items in checkout) {
+      print(items['ingredients']);
+    }
+
+    for (var items in stockList) {
+      print(items);
+    }
+
+    //stock checking
+  }
+
   void _addToTransactions() async {
+    CollectionReference<Map<String, dynamic>> stockCollection =
+        FirebaseFirestore.instance
+            .collection('Accounts')
+            .doc(user.email)
+            .collection('stock');
+
+    final snapshot = await stockCollection.get();
+
+    final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
+      return doc.data();
+    }).toList();
+
+    for (var items in checkout) {
+      print(items['ingredients']);
+    }
     try {
       await _firestore
           .collection('Accounts')
@@ -207,7 +265,8 @@ class _POSPageState extends State<POSPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                _addToTransactions();
+                                //_addToTransactions();
+                                testfunction();
                               },
                               style: CheersStyles.buttonMain,
                               child: const Text(
