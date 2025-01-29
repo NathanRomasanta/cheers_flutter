@@ -10,6 +10,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -44,12 +46,17 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: ElevatedButton(
-        style: CheersStyles.buttonMain,
-        onPressed: () {
-          _showLogoutDialog(context);
-        },
-        child: const Text("Logout"),
+          child: Column(
+        children: [
+          const Text("Email"),
+          ElevatedButton(
+            style: CheersStyles.buttonMain,
+            onPressed: () {
+              _showLogoutDialog(context);
+            },
+            child: const Text("Logout"),
+          ),
+        ],
       )),
     );
   }

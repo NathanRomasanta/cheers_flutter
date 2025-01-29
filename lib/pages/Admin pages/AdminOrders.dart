@@ -32,6 +32,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
         String ingredientName = ingredient['name'] ?? 'Unknown';
         int ingredientQuantity = ingredient['quantity'] ?? 1;
         bool isLiquor = ingredient['isLiquor'] ?? false;
+        int ouncesPerBottle = ingredient['ouncesPerBottle'];
 
         // Check if the ingredient already exists in the stock collection
         DocumentSnapshot existingIngredient =
@@ -56,7 +57,8 @@ class _InventoryOrdersState extends State<InventoryOrders> {
             await stockCollection.doc(ingredientId).set({
               'name': ingredientName,
               'quantity': ingredientQuantity,
-              'running count': ingredientQuantity,
+              'runningCount': ingredientQuantity,
+              'ouncesPerBottle': ouncesPerBottle,
             });
           } else {
             await stockCollection.doc(ingredientId).set({

@@ -32,7 +32,8 @@ class _BarStockState extends State<BarStock> {
           'id': doc.id,
           'name': doc['name'],
           'isLiquor': doc['isLiquor'],
-          'quantity': doc['quantity']
+          'quantity': doc['quantity'],
+          'ouncesPerBottle': doc['ouncesPerBottle']
         };
       }).toList();
     });
@@ -82,6 +83,11 @@ class _BarStockState extends State<BarStock> {
         ElevatedButton(
             onPressed: () {
               _submitOrder();
+            },
+            child: const Text("Clear Form")),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
             },
             child: const Text("Clear Form")),
         ElevatedButton(

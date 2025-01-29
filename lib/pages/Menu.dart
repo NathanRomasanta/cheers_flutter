@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class POSPage extends StatefulWidget {
+  const POSPage({super.key});
+
   @override
   // ignore: library_private_types_in_public_api
   _POSPageState createState() => _POSPageState();
@@ -238,6 +240,10 @@ class _POSPageState extends State<POSPage> {
     });
   }
 
+  void _filterItems(String query) {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,51 +281,94 @@ class _POSPageState extends State<POSPage> {
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
                           decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: Color(0xffF8F8F8)),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Color(0xffF8F8F8),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: GridView.builder(
-                              padding: const EdgeInsets.all(8),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 5,
-                                childAspectRatio: 1.5,
-                              ),
-                              itemCount: items.length,
-                              itemBuilder: (context, index) {
-                                final item = items[index];
-                                return Card(
-                                  color: const Color(0xffF19A6F),
-                                  child: InkWell(
-                                    onTap: () => addToCheckout(item),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(13.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(item['name'],
-                                              style: const TextStyle(
-                                                  fontFamily: 'Product Sans',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            '\$${item['price']}',
-                                            style: const TextStyle(
-                                                fontFamily: 'Product Sans',
-                                                color: Colors.white),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Title & Search Box in a Row
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Available Items",
+                                      style: CheersStyles.h3ss,
+                                    ),
+                                    SizedBox(
+                                      width:
+                                          200, // Adjust the width of the search box
+                                      child: TextField(
+                                        onChanged: (query) {
+                                          setState(() {});
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: "Search...",
+                                          prefixIcon: const Icon(Icons.search),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                                // GridView for Items
+                                Expanded(
+                                  child: GridView.builder(
+                                    padding: const EdgeInsets.all(8),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 5,
+                                      childAspectRatio: 1.5,
+                                    ),
+                                    itemCount:
+                                        items.length, // Use filtered list
+                                    itemBuilder: (context, index) {
+                                      final item = items[index];
+                                      return Card(
+                                        color: const Color(0xffF19A6F),
+                                        child: InkWell(
+                                          onTap: () => addToCheckout(item),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(13.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  item['name'],
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Product Sans',
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  '\$${item['price']}',
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Product Sans',
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -329,54 +378,178 @@ class _POSPageState extends State<POSPage> {
                     // Checkout Section
                     Expanded(
                       flex: 2,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: checkout.length,
-                              itemBuilder: (context, index) {
-                                final item = checkout[index];
-                                return ListTile(
-                                  title: Text(item['name']),
-                                  subtitle: Text(
-                                      'Quantity: ${item['quantity']} - \$${(item['price'] * item['quantity'])}'),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                            Icons.remove_circle_outline),
-                                        onPressed: () =>
-                                            removeFromCheckout(item),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(
-                                            Icons.add_circle_outline),
-                                        onPressed: () => addToCheckout(item),
-                                      ),
-                                    ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 10, right: 20, top: 20, bottom: 20),
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  color: Color(0xffF8F8F8)),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 20,
+                                        bottom: 20),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Checkout",
+                                          style: CheersStyles.h3ss,
+                                        ),
+                                        ElevatedButton(
+                                            style: ButtonStyle(
+                                                textStyle:
+                                                    MaterialStateProperty.all(
+                                                        const TextStyle(
+                                                            fontFamily:
+                                                                "Product Sans")),
+                                                minimumSize: MaterialStateProperty.all(
+                                                    const Size(40, 40)),
+                                                foregroundColor: MaterialStateProperty.all(
+                                                    Colors.white), // Text color
+                                                padding: MaterialStateProperty.all(
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 32,
+                                                        vertical: 16)),
+                                                backgroundColor: MaterialStateProperty.all(
+                                                    const Color(0xffFF6E1F)),
+                                                shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ))),
+                                            onPressed: () {},
+                                            child: const Text("Void"))
+                                      ],
+                                    ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                          Text(total.toString()),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                //_addToTransactions();
-                                testFunction();
-                              },
-                              style: CheersStyles.buttonMain,
-                              child: const Text(
-                                'Send to Payment Pad',
-                                style: TextStyle(fontFamily: 'Product Sans'),
+                                  Container(
+                                    color: const Color(0xffF1F1F1),
+                                    child: const Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 17,
+                                        ),
+                                        Text(
+                                          "Name",
+                                          style: CheersStyles.h5s,
+                                        ),
+                                        SizedBox(
+                                          width: 180,
+                                        ),
+                                        Text(
+                                          "QTY",
+                                          style: CheersStyles.h5s,
+                                        ),
+                                        SizedBox(
+                                          width: 40,
+                                        ),
+                                        Text(
+                                          "Price",
+                                          style: CheersStyles.h5s,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 340,
+                                    child: SingleChildScrollView(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: checkout.length,
+                                        itemBuilder: (context, index) {
+                                          final item = checkout[index];
+                                          return ListTile(
+                                            title: Text(item['name']),
+                                            //subtitle: Text(
+                                            //'Quantity: ${item['quantity']} - \$${(item['price'] * item['quantity'])}'),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.remove_circle_outline,
+                                                    color: Color(0xffFF6E1F),
+                                                  ),
+                                                  onPressed: () =>
+                                                      removeFromCheckout(item),
+                                                ),
+                                                Text('${item['quantity']}'),
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.add_circle_outline,
+                                                    color: Color(0xffFF6E1F),
+                                                  ),
+                                                  onPressed: () =>
+                                                      addToCheckout(item),
+                                                ),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text(
+                                                    "\$${(item['price'] * item['quantity'])}")
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const Divider(),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(20),
+                                            bottomLeft: Radius.circular(20)),
+                                        color: Color(0xffF1F1F1)),
+                                    padding: EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Total",
+                                          style: CheersStyles.h4s,
+                                        ),
+                                        Text(total.toString())
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              height: 20,
+                            ),
+                            SizedBox(
+                              height: 50,
+                              width: 1000,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  //_addToTransactions();
+                                  testFunction();
+                                },
+                                style: CheersStyles.buttonMain,
+                                child: const Text(
+                                  'Send to Payment Pad',
+                                  style: TextStyle(
+                                    fontFamily: 'Product Sans',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseService {
   final CollectionReference Pos_Items =
@@ -18,6 +19,11 @@ class FirebaseService {
   Stream<QuerySnapshot> getItemsStream() {
     final itemsStream = items.snapshots();
     return itemsStream;
+  }
+
+  Stream<QuerySnapshot> getStock() {
+    final stockStream = items.snapshots();
+    return stockStream;
   }
 
   Stream<QuerySnapshot> getOrdersStream() {

@@ -52,6 +52,26 @@ class CheersStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle h3ss = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 21,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle h4s = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 16,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle h5s = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 13,
+    color: Colors.grey,
+    fontWeight: FontWeight.w700,
+  );
   static const TextStyle h2s = TextStyle(
     fontFamily: 'Product Sans',
     fontSize: 20,

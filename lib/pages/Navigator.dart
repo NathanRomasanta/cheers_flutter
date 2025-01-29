@@ -1,6 +1,7 @@
 import 'package:cheers_flutter/pages/Menu.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
 import 'package:cheers_flutter/pages/Stock.dart';
+import 'package:cheers_flutter/pages/Stocks.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +19,15 @@ class _NavigatorGateState extends State<NavigatorGate> {
     return FluentApp(
         home: NavigationView(
       pane: NavigationPane(
-          size: const NavigationPaneSize(compactWidth: 60),
-          displayMode: PaneDisplayMode.compact,
+          header: Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10),
+            child: SizedBox(
+                height: 40,
+                child: Image.asset(
+                  'lib/assets/images/Logo.png',
+                )),
+          ),
+          size: const NavigationPaneSize(openMaxWidth: 150),
           items: [
             PaneItem(
                 icon: const Icon(
@@ -27,16 +35,16 @@ class _NavigatorGateState extends State<NavigatorGate> {
                   color: Color(0xffFF6E1F),
                   size: 25,
                 ),
-                title: const Text("Home"),
-                body: POSPage()),
+                title: const Text("Order"),
+                body: const POSPage()),
             PaneItem(
                 icon: const Icon(
-                  Icons.settings,
+                  Icons.table_chart,
                   color: Color(0xffFF6E1F),
                   size: 25,
                 ),
-                title: const Text("Home"),
-                body: const Settings()),
+                title: const Text("Stock"),
+                body: const StocksPage()),
             PaneItem(
                 icon: const Icon(
                   Icons.table_chart,
@@ -45,6 +53,14 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 ),
                 title: const Text("Stocks"),
                 body: const BarStock()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.settings,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("Settings"),
+                body: const Settings()),
           ],
           selected: currentPage,
           onChanged: (index) => setState(() {
