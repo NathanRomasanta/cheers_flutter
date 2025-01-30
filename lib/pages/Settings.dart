@@ -44,11 +44,13 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    String userEmail = currentUser.email ?? 'No email found';
     return Scaffold(
       body: Center(
           child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Email"),
+          Text(userEmail),
           ElevatedButton(
             style: CheersStyles.buttonMain,
             onPressed: () {

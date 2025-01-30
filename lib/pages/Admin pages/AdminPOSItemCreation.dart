@@ -1,4 +1,5 @@
 // ignore: file_names
+import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -75,90 +76,110 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Ingredients'),
-      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Drink Name'),
-              onChanged: (value) {
-                setState(() {
-                  name = value;
-                });
-              },
+        padding: const EdgeInsets.all(50),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Inventory Item Creation", style: CheersStyles.h1s),
+              const SizedBox(height: 15),
+              const Text(
+              "Item Name",
+              style: CheersStyles.inputBoxLabels,
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Price'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  price = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Select Ingredients'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: ingredients.map((ingredient) {
-                        return ListTile(
-                          title: Text(
-                              '${ingredient['name']} - \$${ingredient['price']}'),
-                          onTap: () => _selectIngredient(ingredient),
-                        );
-                      }).toList(),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Close'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: const Text('Select Ingredient'),
-            ),
-            const SizedBox(height: 20),
-            const Text('Selected Ingredients:'),
-            Expanded(
-              child: ListView.builder(
-                itemCount: selectedIngredients.length,
-                itemBuilder: (context, index) {
-                  var ingredient = selectedIngredients[index];
-                  return ListTile(
-                    title: Text(
-                        '${ingredient['name']} - \$${ingredient['price']}'),
-                    subtitle: ingredient['isLiquor']
-                        ? TextField(
-                            decoration:
-                                const InputDecoration(labelText: 'Ounces'),
-                            keyboardType: TextInputType.number,
-                            onChanged: (value) {
-                              _updateOunces(ingredient['id'], int.parse(value));
-                            },
-                          )
-                        : null,
-                  );
+            const SizedBox(height: 15),
+            SizedBox(
+              width: 500,
+              child: TextField(
+                decoration: const InputDecoration(labelText: 'Drink Name'),
+                onChanged: (value) {
+                  setState(() {
+                    name = value;
+                  });
                 },
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitOrder,
-              child: const Text('Submit Order'),
-            ),
-          ],
+              TextField(
+                decoration: const InputDecoration(labelText: 'Drink Name'),
+                onChanged: (value) {
+                  setState(() {
+                    name = value;
+                  });
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    price = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Select Ingredients'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: ingredients.map((ingredient) {
+                          return ListTile(
+                            title: Text(
+                                '${ingredient['name']} - \$${ingredient['price']}'),
+                            onTap: () => _selectIngredient(ingredient),
+                          );
+                        }).toList(),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: const Text('Select Ingredient'),
+              ),
+              const SizedBox(height: 20),
+              const Text('Selected Ingredients:'),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: selectedIngredients.length,
+                  itemBuilder: (context, index) {
+                    var ingredient = selectedIngredients[index];
+                    return ListTile(
+                      title: Text(
+                          '${ingredient['name']} - \$${ingredient['price']}'),
+                      subtitle: ingredient['isLiquor']
+                          ? TextField(
+                              decoration:
+                                  const InputDecoration(labelText: 'Ounces'),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                _updateOunces(
+                                    ingredient['id'], int.parse(value));
+                              },
+                            )
+                          : null,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitOrder,
+                child: const Text('Submit Order'),
+              ),
+            ],
+          ),
         ),
       ),
     );

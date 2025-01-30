@@ -80,90 +80,6 @@ class _StocksPageState extends State<StocksPage> {
     }
   }
 
-  void showTableDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Container(
-            width:
-                MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-            height: MediaQuery.of(context).size.height *
-                0.8, // 60% of screen height
-            padding: EdgeInsets.all(16),
-            child: Column(children: [
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    _submitOrder();
-                  },
-                  child: const Text("Clear Form")),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Close")),
-              ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Select Ingredients'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: ingredients.map((ingredient) {
-                            return ListTile(
-                              title: Text('${ingredient['name']}'),
-                              onTap: () => _selectIngredient(ingredient),
-                            );
-                          }).toList(),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: const Text("Order more stock")),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: selectedIngredients.length,
-                  itemBuilder: (context, index) {
-                    var ingredient = selectedIngredients[index];
-                    return ListTile(
-                      title: Text('${ingredient['name']}'),
-                      subtitle: ingredient['isLiquor']
-                          ? TextField(
-                              decoration:
-                                  const InputDecoration(labelText: 'quantity'),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                _updateQuantity(
-                                    ingredient['id'], int.parse(value));
-                              },
-                            )
-                          : null,
-                    );
-                  },
-                ),
-              ),
-            ]),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,7 +99,92 @@ class _StocksPageState extends State<StocksPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    showTableDialog(context);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width *
+                                0.8, // 80% of screen width
+                            height: MediaQuery.of(context).size.height *
+                                0.8, // 60% of screen height
+                            padding: EdgeInsets.all(16),
+                            child: Column(children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    _submitOrder();
+                                  },
+                                  child: const Text("Clear Form")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Close")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Select Ingredients'),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children:
+                                              ingredients.map((ingredient) {
+                                            return ListTile(
+                                              title:
+                                                  Text('${ingredient['name']}'),
+                                              onTap: () =>
+                                                  _selectIngredient(ingredient),
+                                            );
+                                          }).toList(),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Close'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: const Text("Order more stock")),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: selectedIngredients.length,
+                                  itemBuilder: (context, index) {
+                                    var ingredient = selectedIngredients[index];
+                                    return ListTile(
+                                      title: Text('${ingredient['name']}'),
+                                      subtitle: ingredient['isLiquor']
+                                          ? TextField(
+                                              decoration: const InputDecoration(
+                                                  labelText: 'quantity'),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onChanged: (value) {
+                                                _updateQuantity(
+                                                    ingredient['id'],
+                                                    int.parse(value));
+                                              },
+                                            )
+                                          : null,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ]),
+                          ),
+                        );
+                      },
+                    );
                   },
                   style: CheersStyles.buttonMain,
                   child: const Text("Order"),

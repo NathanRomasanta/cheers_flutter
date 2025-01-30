@@ -76,6 +76,18 @@ class _BarStockState extends State<BarStock> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Your Title"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
       body: Column(children: [
         const SizedBox(
           height: 20,

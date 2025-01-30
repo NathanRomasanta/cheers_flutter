@@ -510,7 +510,7 @@ class _POSPageState extends State<POSPage> {
                                             bottomRight: Radius.circular(20),
                                             bottomLeft: Radius.circular(20)),
                                         color: Color(0xffF1F1F1)),
-                                    padding: EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -519,14 +519,17 @@ class _POSPageState extends State<POSPage> {
                                           "Total",
                                           style: CheersStyles.h4s,
                                         ),
-                                        Text(total.toString())
+                                        Text(
+                                          total.toString(),
+                                          style: CheersStyles.h4s,
+                                        )
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             SizedBox(

@@ -46,6 +46,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
                       'isLiquor': false,
+                      'ouncesPerBottle': 1,
                       'quantity': 1
                     });
                   } else {
@@ -57,7 +58,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                       'name': itemNameController.text.trim(),
                       'id': itemIDController.text.trim(),
                       'quantity': int.parse(itemQuantityController.text.trim()),
-                      'ouncePerBottle':
+                      'ouncesPerBottle':
                           int.parse(ouncePerBottleController.text.trim()),
                       'isLiquor': true
                     });
@@ -150,7 +151,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
               Row(
                 children: [
                   const Text(
-                    "Quantity (Bottle)",
+                    "Starting Quantity(Bottle)",
                     style: CheersStyles.inputBoxLabels,
                   ),
                   const SizedBox(width: 15),

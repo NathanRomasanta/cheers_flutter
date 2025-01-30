@@ -21,7 +21,15 @@ class _AdminNavigatorState extends State<AdminNavigator> {
   Widget build(BuildContext context) {
     return NavigationView(
       pane: NavigationPane(
-        //displayMode: PaneDisplayMode.compact,
+        header: Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10),
+          child: SizedBox(
+              height: 40,
+              child: Image.asset(
+                'lib/assets/images/Logo.png',
+              )),
+        ),
+        size: const NavigationPaneSize(openMaxWidth: 175),
         selected: _selectedIndex,
         onChanged: (index) {
           setState(() {

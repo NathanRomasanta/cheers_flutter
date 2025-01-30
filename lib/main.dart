@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FluentApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: FluentThemeData(fontFamily: 'Product Sans'),
       home: const AuthGate(),
     );
