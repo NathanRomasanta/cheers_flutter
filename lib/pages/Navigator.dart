@@ -47,12 +47,12 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 body: const StocksPage()),
             PaneItem(
                 icon: const Icon(
-                  Icons.table_chart,
+                  Icons.send,
                   color: Color(0xffFF6E1F),
                   size: 25,
                 ),
-                title: const Text("Stocks"),
-                body: const BarStock()),
+                title: const Text("Orders"),
+                body: const StockOrder()),
             PaneItem(
                 icon: const Icon(
                   Icons.settings,

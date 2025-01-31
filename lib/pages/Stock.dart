@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class BarStock extends StatefulWidget {
-  const BarStock({super.key});
+class StockOrder extends StatefulWidget {
+  const StockOrder({super.key});
 
   @override
-  State<BarStock> createState() => _BarStockState();
+  State<StockOrder> createState() => _StockOrderState();
 }
 
-class _BarStockState extends State<BarStock> {
+class _StockOrderState extends State<StockOrder> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> ingredients = [];
   List<Map<String, dynamic>> selectedIngredients = [];
@@ -76,18 +76,6 @@ class _BarStockState extends State<BarStock> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Your Title"),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
       body: Column(children: [
         const SizedBox(
           height: 20,
