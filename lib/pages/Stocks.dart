@@ -51,6 +51,7 @@ class _StocksPageState extends State<StocksPage> {
       selectedIngredients.add(ingredient);
     });
 
+    // ignore: avoid_print
     print(selectedIngredients);
   }
 
@@ -111,7 +112,7 @@ class _StocksPageState extends State<StocksPage> {
                                 0.8, // 80% of screen width
                             height: MediaQuery.of(context).size.height *
                                 0.8, // 60% of screen height
-                            padding: EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
                             child: Column(children: [
                               const SizedBox(
                                 height: 20,
@@ -237,8 +238,7 @@ class _StocksPageState extends State<StocksPage> {
                                       data['runningCount'].toString();
                                   String ouncesPerBottle =
                                       data['ouncesPerBottle'].toString();
-                                  String itemPrice =
-                                      data['id'].toString() ?? "";
+                                  String itemPrice = data['id'].toString();
 
                                   return Container(
                                     decoration: const BoxDecoration(

@@ -193,8 +193,8 @@ class _InventoryOrdersState extends State<InventoryOrders> {
                                               child: const Text("Cancel"),
                                             ),
                                             ElevatedButton(
-                                              onPressed: () async {
-                                                await fulfillOrder(
+                                              onPressed: () {
+                                                fulfillOrder(
                                                     itemName, orderList, docID);
                                                 Navigator.of(context).pop();
                                               },

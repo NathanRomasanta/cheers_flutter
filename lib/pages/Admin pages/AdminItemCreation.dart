@@ -36,10 +36,10 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   if (isLiquor == false) {
                     //anything else that's not a liquor
-                    await FirebaseFirestore.instance
+                    FirebaseFirestore.instance
                         .collection("Items")
                         .doc(itemIDController.text.trim())
                         .set({
@@ -51,7 +51,7 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
                     });
                   } else {
                     //liquor item add
-                    await FirebaseFirestore.instance
+                    FirebaseFirestore.instance
                         .collection("Items")
                         .doc(itemIDController.text.trim())
                         .set({
