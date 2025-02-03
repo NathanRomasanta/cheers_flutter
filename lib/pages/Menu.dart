@@ -1,6 +1,7 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:cheers_flutter/design/design.dart';
+import 'package:cheers_flutter/pages/Payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -168,17 +169,55 @@ class _POSPageState extends State<POSPage> {
             }
           } else {
             print('Not sufficient for ${needed['id']}');
+
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Insufficient Stock'),
+                  content: Text('Stock Insufficient ${needed['id']}'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Okay'),
+                    ),
+                  ],
+                );
+              },
+            );
           }
         }
       } else {
         print('No stock found for ${needed['id']}');
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Missing Stock'),
+              content: Text('No stock found for ${needed['id']}'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Okay'),
+                ),
+              ],
+            );
+          },
+        );
         isStockSufficient = false; // Mark stock as insufficient
       }
     }
 
 // Step 4: Proceed to the next steps if stock is sufficient
     if (isStockSufficient) {
-      proceedToNextStep(); // Define what happens next in your workflow
+      _addToTransactions(); // Define what happens next in your workflow
     }
   }
 
@@ -188,9 +227,29 @@ class _POSPageState extends State<POSPage> {
     // Add your actual notification logic here (e.g., Firebase Cloud Messaging)
   }
 
-// Placeholder function for the next steps
-  void proceedToNextStep() {
-    print("Stock is sufficient. Proceeding to the next step...");
+  void checkIfEmpty() {
+    if (checkout.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Checkout is Empty'),
+            content: const Text('No items in checkout!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      testFunction();
+    }
   }
 
   void _addToTransactions() async {
@@ -222,8 +281,35 @@ class _POSPageState extends State<POSPage> {
       });
       Fluttertoast.showToast(
           msg: 'Transaction Done', gravity: ToastGravity.TOP);
+      setState(() {
+        checkout.clear();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PaymentScreen()),
+        );
+      });
     } catch (error) {
       Fluttertoast.showToast(msg: error.toString(), gravity: ToastGravity.TOP);
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(error.toString()),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Okay'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -540,7 +626,7 @@ class _POSPageState extends State<POSPage> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   //_addToTransactions();
-                                  testFunction();
+                                  checkIfEmpty();
                                 },
                                 style: CheersStyles.buttonMain,
                                 child: const Text(

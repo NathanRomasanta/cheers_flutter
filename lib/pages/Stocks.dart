@@ -1,5 +1,5 @@
 import 'package:cheers_flutter/design/design.dart';
-import 'package:cheers_flutter/pages/Stock.dart';
+import 'package:cheers_flutter/pages/Orders.dart';
 import 'package:cheers_flutter/services/FirestoreService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

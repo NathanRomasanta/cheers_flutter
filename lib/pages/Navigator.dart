@@ -1,7 +1,9 @@
 import 'package:cheers_flutter/pages/Menu.dart';
+import 'package:cheers_flutter/pages/Payment.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
-import 'package:cheers_flutter/pages/Stock.dart';
+import 'package:cheers_flutter/pages/Orders.dart';
 import 'package:cheers_flutter/pages/Stocks.dart';
+import 'package:cheers_flutter/pages/Transactions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +39,14 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 ),
                 title: const Text("Order"),
                 body: const POSPage()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.corporate_fare_rounded,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("Transactions"),
+                body: const TransactionScreen()),
             PaneItem(
                 icon: const Icon(
                   Icons.table_chart,
