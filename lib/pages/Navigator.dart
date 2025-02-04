@@ -21,6 +21,8 @@ class _NavigatorGateState extends State<NavigatorGate> {
     return FluentApp(
         home: NavigationView(
       pane: NavigationPane(
+          displayMode: PaneDisplayMode.open,
+          toggleable: true,
           header: Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10),
             child: SizedBox(
@@ -29,7 +31,7 @@ class _NavigatorGateState extends State<NavigatorGate> {
                   'lib/assets/images/Logo.png',
                 )),
           ),
-          size: const NavigationPaneSize(openMaxWidth: 150),
+          size: const NavigationPaneSize(openMaxWidth: 60),
           items: [
             PaneItem(
                 icon: const Icon(

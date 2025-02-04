@@ -175,7 +175,7 @@ class _POSPageState extends State<POSPage> {
               builder: (context) {
                 return AlertDialog(
                   title: const Text('Insufficient Stock'),
-                  content: Text('Stock Insufficient ${needed['id']}'),
+                  content: Text('Stock Insufficient ${needed['name']}'),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -198,7 +198,7 @@ class _POSPageState extends State<POSPage> {
           builder: (context) {
             return AlertDialog(
               title: const Text('Missing Stock'),
-              content: Text('No stock found for ${needed['id']}'),
+              content: Text('No stock found for ${needed['name']}'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -333,6 +333,7 @@ class _POSPageState extends State<POSPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -345,6 +346,12 @@ class _POSPageState extends State<POSPage> {
           }
 
           final items = snapshot.data!;
+          // Get screen width
+          double screenWidth = MediaQuery.of(context).size.width;
+          // Determine number of grid columns based on screen width
+          int crossAxisCount =
+              screenWidth < 600 ? 2 : (screenWidth < 900 ? 3 : 5);
+
           return ListView(
             children: [
               const Padding(
@@ -358,8 +365,9 @@ class _POSPageState extends State<POSPage> {
                 ),
               ),
               SizedBox(
-                height: 600,
-                width: 700,
+                height: screenWidth < 600
+                    ? 800
+                    : 600, // Adjust height for smaller screens
                 child: Row(
                   children: [
                     // Items List
@@ -367,98 +375,271 @@ class _POSPageState extends State<POSPage> {
                       flex: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Color(0xffF8F8F8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Title & Search Box in a Row
-                                Row(
+                        child: Column(
+                          children: [
+                            // Add any widget here before the Container
+
+                            // Add spacing if needed
+
+                            // The existing Container wrapped in Expanded
+                            Expanded(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  color: Color(0xffF8F8F8),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Title & Search Box in a Row
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            "Available Items",
+                                            style: CheersStyles.h3ss,
+                                          ),
+                                          SizedBox(
+                                            width:
+                                                200, // Adjust the width of the search box
+                                            child: TextField(
+                                              onChanged: (query) {
+                                                setState(() {});
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: "Search...",
+                                                prefixIcon:
+                                                    const Icon(Icons.search),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+
+                                      // GridView for Items
+                                      Expanded(
+                                        child: GridView.builder(
+                                          padding: const EdgeInsets.all(8),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: crossAxisCount,
+                                            childAspectRatio:
+                                                MediaQuery.of(context)
+                                                            .size
+                                                            .width <
+                                                        600
+                                                    ? 1.5
+                                                    : 1.2,
+                                          ),
+                                          itemCount:
+                                              items.length, // Use filtered list
+                                          itemBuilder: (context, index) {
+                                            final item = items[index];
+                                            return Card(
+                                              color: const Color(0xffF19A6F),
+                                              child: InkWell(
+                                                onTap: () =>
+                                                    addToCheckout(item),
+                                                child: Container(
+                                                  height: MediaQuery.of(context)
+                                                              .size
+                                                              .width <
+                                                          600
+                                                      ? 150
+                                                      : 200, // Fixed height based on screen size
+                                                  child: ListTile(
+                                                    minVerticalPadding: 10,
+                                                    title: Text(
+                                                      item['name'],
+                                                      style: const TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    subtitle: Text(
+                                                      '\$${item['price']}',
+                                                      style: const TextStyle(
+                                                        fontFamily:
+                                                            'Product Sans',
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+                            Container(
+                              height: 120,
+                              child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "Available Items",
-                                      style: CheersStyles.h3ss,
-                                    ),
-                                    SizedBox(
-                                      width:
-                                          200, // Adjust the width of the search box
-                                      child: TextField(
-                                        onChanged: (query) {
-                                          setState(() {});
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: "Search...",
-                                          prefixIcon: const Icon(Icons.search),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
+                                    InkWell(
+                                      onTap: () {
+                                        // Your button action here
+                                        print("Container button tapped!");
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Optional: Matches Container's border radius
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color(0xffF8F8F8), // Button color
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "Tap Me",
+                                            style: TextStyle(
+                                              color: const Color(0xffF19A6F),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-
-                                // GridView for Items
-                                Expanded(
-                                  child: GridView.builder(
-                                    padding: const EdgeInsets.all(8),
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 5,
-                                      childAspectRatio: 1.5,
-                                    ),
-                                    itemCount:
-                                        items.length, // Use filtered list
-                                    itemBuilder: (context, index) {
-                                      final item = items[index];
-                                      return Card(
-                                        color: const Color(0xffF19A6F),
-                                        child: InkWell(
-                                          onTap: () => addToCheckout(item),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(13.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  item['name'],
-                                                  style: const TextStyle(
-                                                    fontFamily: 'Product Sans',
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  '\$${item['price']}',
-                                                  style: const TextStyle(
-                                                    fontFamily: 'Product Sans',
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ],
+                                    InkWell(
+                                      onTap: () {
+                                        // Your button action here
+                                        print("Container button tapped!");
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Optional: Matches Container's border radius
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color(0xffF8F8F8), // Button color
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "Tap Me",
+                                            style: TextStyle(
+                                              color: const Color(0xffF19A6F),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        // Your button action here
+                                        print("Container button tapped!");
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Optional: Matches Container's border radius
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color(0xffF8F8F8), // Button color
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "Tap Me",
+                                            style: TextStyle(
+                                              color: const Color(0xffF19A6F),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        // Your button action here
+                                        print("Container button tapped!");
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Optional: Matches Container's border radius
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color(0xffF8F8F8), // Button color
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "Tap Me",
+                                            style: TextStyle(
+                                              color: const Color(0xffF19A6F),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        // Your button action here
+                                        print("Container button tapped!");
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Optional: Matches Container's border radius
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color(0xffF8F8F8), // Button color
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "Tap Me",
+                                            style: TextStyle(
+                                              color: const Color(0xffF19A6F),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                            )
+                          ],
                         ),
                       ),
                     ),
@@ -494,61 +675,63 @@ class _POSPageState extends State<POSPage> {
                                         ),
                                         ElevatedButton(
                                             style: ButtonStyle(
-                                                textStyle:
+                                                textStyle: MaterialStateProperty.all(
+                                                    const TextStyle(
+                                                        fontFamily:
+                                                            "Product Sans")),
+                                                minimumSize:
                                                     MaterialStateProperty.all(
-                                                        const TextStyle(
-                                                            fontFamily:
-                                                                "Product Sans")),
-                                                minimumSize: MaterialStateProperty.all(
-                                                    const Size(40, 40)),
-                                                foregroundColor: MaterialStateProperty.all(
-                                                    Colors.white), // Text color
+                                                        const Size(40, 40)),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
                                                 padding: MaterialStateProperty.all(
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 32,
                                                         vertical: 16)),
                                                 backgroundColor: MaterialStateProperty.all(
                                                     const Color(0xffFF6E1F)),
-                                                shape: MaterialStateProperty.all<
-                                                    RoundedRectangleBorder>(RoundedRectangleBorder(
+                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(30),
                                                 ))),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              setState(() {
+                                                checkout.clear();
+                                              });
+                                            },
                                             child: const Text("Void"))
                                       ],
                                     ),
                                   ),
                                   Container(
-                                    color: const Color(0xffF1F1F1),
-                                    child: const Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 17,
-                                        ),
-                                        Text(
+                                      height: 40,
+                                      color: const Color(0xffF1F1F1),
+                                      child: const ListTile(
+                                        leading: Text(
                                           "Name",
                                           style: CheersStyles.h5s,
                                         ),
-                                        SizedBox(
-                                          width: 180,
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "QTY",
+                                              style: CheersStyles.h5s,
+                                            ),
+                                            SizedBox(
+                                              width: 40,
+                                            ),
+                                            Text(
+                                              "Price",
+                                              style: CheersStyles.h5s,
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          "QTY",
-                                          style: CheersStyles.h5s,
-                                        ),
-                                        SizedBox(
-                                          width: 40,
-                                        ),
-                                        Text(
-                                          "Price",
-                                          style: CheersStyles.h5s,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                      )),
                                   SizedBox(
-                                    height: 340,
+                                    height: 320,
                                     child: SingleChildScrollView(
                                       child: ListView.builder(
                                         shrinkWrap: true,
@@ -557,8 +740,6 @@ class _POSPageState extends State<POSPage> {
                                           final item = checkout[index];
                                           return ListTile(
                                             title: Text(item['name']),
-                                            //subtitle: Text(
-                                            //'Quantity: ${item['quantity']} - \$${(item['price'] * item['quantity'])}'),
                                             trailing: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -622,10 +803,11 @@ class _POSPageState extends State<POSPage> {
                             ),
                             SizedBox(
                               height: 50,
-                              width: 1000,
+                              width: screenWidth < 600
+                                  ? 300
+                                  : 1000, // Adjust button width for smaller screens
                               child: ElevatedButton(
                                 onPressed: () {
-                                  //_addToTransactions();
                                   checkIfEmpty();
                                 },
                                 style: CheersStyles.buttonMain,

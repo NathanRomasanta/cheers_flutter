@@ -55,6 +55,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
           // If the document does not exist, create a new document
           if (isLiquor) {
             await stockCollection.doc(ingredientId).set({
+              'id': ingredientId,
               'name': ingredientName,
               'quantity': ingredientQuantity,
               'runningCount': ingredientQuantity,
@@ -62,6 +63,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
             });
           } else {
             await stockCollection.doc(ingredientId).set({
+              'id': ingredient,
               'name': ingredientName,
               'quantity': ingredientQuantity,
             });

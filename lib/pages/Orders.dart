@@ -107,7 +107,9 @@ class _StockOrderState extends State<StockOrder> {
           },
         );
 
-        selectedIngredients.clear();
+        setState(() {
+          selectedIngredients.clear();
+        });
       } catch (error) {
         Fluttertoast.showToast(
             msg: error.toString(), gravity: ToastGravity.TOP);
@@ -129,7 +131,7 @@ class _StockOrderState extends State<StockOrder> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Recent Transactions",
+                  "Order Stock",
                   style: CheersStyles.h1s,
                 ),
               ],
