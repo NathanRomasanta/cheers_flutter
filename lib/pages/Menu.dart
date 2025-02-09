@@ -59,6 +59,38 @@ class _POSPageState extends State<POSPage> {
         .toList();
   }
 
+  Future<List<Map<String, dynamic>>> fetchFood() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('food')
+        .collection('food_items')
+        .get();
+    return snapshot.docs
+        .map((doc) => {
+              'id': doc.id,
+              'name': doc['name'],
+              'price': doc['price'],
+              'ingredients': doc['ingredients'],
+            })
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchBeer() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('beer')
+        .collection('beer_items')
+        .get();
+    return snapshot.docs
+        .map((doc) => {
+              'id': doc.id,
+              'name': doc['name'],
+              'price': doc['price'],
+              'ingredients': doc['ingredients'],
+            })
+        .toList();
+  }
+
   Future<List<Map<String, dynamic>>> fetchWines() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('Pos_Items')
@@ -379,123 +411,265 @@ class _POSPageState extends State<POSPage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     int crossAxisCount = screenWidth < 600 ? 2 : (screenWidth < 900 ? 3 : 5);
-    return ListView(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 20, left: 20),
-          child: Text(
-            "Order",
-            style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Product Sans'),
-          ),
-        ),
-        SizedBox(
-          height: screenWidth < 600
-              ? 800
-              : 600, // Adjust height for smaller screens
-          child: Row(
+    return Scaffold(
+      backgroundColor: const Color(0xffF4F1EA),
+      body: ListView(
+        children: [
+          Row(
             children: [
-              // Items List
-              Expanded(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      // Add any widget here before the Container
-
-                      // Add spacing if needed
-
-                      // The existing Container wrapped in Expanded
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Color(0xffF8F8F8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              const Padding(
+                padding: EdgeInsets.only(top: 20, left: 20),
+                child: Text(
+                  "Register",
+                  style: TextStyle(
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Product Sans'),
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 20,
+                ),
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(const Size(120, 50)),
+                        backgroundColor:
+                            MaterialStateProperty.all(const Color(0xffFF6E1F)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ))),
+                    onPressed: () {},
+                    child: const Text(
+                      "Close Till",
+                      style: TextStyle(fontSize: 15),
+                    )),
+              ),
+              const SizedBox(
+                width: 30,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Text("John Doe"),
+              ),
+              const SizedBox(
+                width: 30,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenWidth < 600
+                ? 800
+                : 600, // Adjust height for smaller screens
+            child: Row(
+              children: [
+                // Items List
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 50,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Title & Search Box in a Row
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      title,
-                                      style: CheersStyles.h3ss,
-                                    ),
-                                    SizedBox(
-                                      width:
-                                          200, // Adjust the width of the search box
-                                      child: TextField(
-                                        onChanged: (query) {
-                                          setState(() {});
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: "Search...",
-                                          prefixIcon: const Icon(Icons.search),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            const Size(150, 50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                const Color(0xffF0886F)),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ))),
+                                    onPressed: () {
+                                      setState(() {
+                                        itemsFuture = fetchCocktails();
+                                        title = "Favorites";
+                                      });
+                                    },
+                                    child: const Text("Favorites")),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            const Size(150, 50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                const Color(0xffF0886F)),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ))),
+                                    onPressed: () {
+                                      setState(() {
+                                        itemsFuture = fetchCocktails();
+                                        title = "Cocktails";
+                                      });
+                                    },
+                                    child: const Text("Cocktails")),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            const Size(150, 50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                const Color(0xffF0886F)),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ))),
+                                    onPressed: () {
+                                      setState(() {
+                                        itemsFuture = fetchWines();
+                                        title = "Wines";
+                                      });
+                                    },
+                                    child: const Text("Wines")),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            const Size(150, 50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                const Color(0xffF0886F)),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ))),
+                                    onPressed: () {
+                                      setState(() {
+                                        itemsFuture = fetchBeer();
+                                        title = "Beers";
+                                      });
+                                    },
+                                    child: const Text("Beers")),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            const Size(150, 50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                const Color(0xffF0886F)),
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ))),
+                                    onPressed: () {
+                                      setState(() {
+                                        itemsFuture = fetchFood();
+                                        title = "Food";
+                                      });
+                                    },
+                                    child: const Text("Food")),
+                              ]),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Color(0xffF8F8F8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Title & Search Box in a Row
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Text(
+                                        title,
+                                        style: CheersStyles.h3ss,
+                                      ),
+                                      Spacer(),
+                                      SizedBox(
+                                        height: 40,
+                                        width:
+                                            200, // Adjust the width of the search box
+                                        child: TextField(
+                                          textAlignVertical:
+                                              TextAlignVertical.bottom,
+                                          onChanged: (query) {
+                                            setState(() {});
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: "Search...",
+                                            prefixIcon:
+                                                const Icon(Icons.search),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
+                                    ],
+                                  ),
 
-                                // GridView for Items
-                                FutureBuilder(
-                                    future: itemsFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      } else if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                'Error: ${snapshot.error}'));
-                                      }
-                                      final items = snapshot.data!;
-                                      return Expanded(
-                                        child: GridView.builder(
-                                          padding: const EdgeInsets.all(8),
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: crossAxisCount,
-                                            childAspectRatio:
-                                                MediaQuery.of(context)
-                                                            .size
-                                                            .width <
-                                                        600
-                                                    ? 1.5
-                                                    : 1.2,
-                                          ),
-                                          itemCount:
-                                              items.length, // Use filtered list
-                                          itemBuilder: (context, index) {
-                                            final item = items[index];
-                                            return Card(
-                                              color: const Color(0xffF19A6F),
-                                              child: InkWell(
-                                                onTap: () =>
-                                                    addToCheckout(item),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                              .size
-                                                              .width <
-                                                          600
-                                                      ? 150
-                                                      : 200, // Fixed height based on screen size
+                                  // GridView for Items
+                                  FutureBuilder(
+                                      future: itemsFuture,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  'Error: ${snapshot.error}'));
+                                        }
+                                        final items = snapshot.data!;
+                                        return Expanded(
+                                          child: GridView.builder(
+                                            padding: const EdgeInsets.all(8),
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: crossAxisCount,
+                                              childAspectRatio: MediaQuery.of(
+                                                              context)
+                                                          .size
+                                                          .width <
+                                                      600
+                                                  ? 2.0
+                                                  : 1.8, // Increase this value
+                                            ),
+                                            itemCount: items.length,
+                                            itemBuilder: (context, index) {
+                                              final item = items[index];
+                                              return Card(
+                                                color: const Color(0xffF19A6F),
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      addToCheckout(item),
                                                   child: ListTile(
-                                                    minVerticalPadding: 10,
                                                     title: Text(
                                                       item['name'],
                                                       style: const TextStyle(
@@ -516,347 +690,205 @@ class _POSPageState extends State<POSPage> {
                                                     ),
                                                   ),
                                                 ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      })
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Checkout Section
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10, right: 20, top: 20, bottom: 20),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Color(0xffF8F8F8)),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 20, bottom: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Checkout",
+                                      style: CheersStyles.h3ss,
+                                    ),
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            textStyle: MaterialStateProperty.all(
+                                                const TextStyle(
+                                                    fontFamily:
+                                                        "Product Sans")),
+                                            minimumSize: MaterialStateProperty.all(
+                                                const Size(40, 40)),
+                                            foregroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white),
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 32,
+                                                    vertical: 16)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    const Color(0xffFF6E1F)),
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ))),
+                                        onPressed: () {
+                                          setState(() {
+                                            checkout.clear();
+                                          });
+                                        },
+                                        child: const Text("Void"))
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                  height: 40,
+                                  color: const Color(0xffF1F1F1),
+                                  child: const ListTile(
+                                    leading: Text(
+                                      "Name",
+                                      style: CheersStyles.h5s,
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "QTY",
+                                          style: CheersStyles.h5s,
+                                        ),
+                                        SizedBox(
+                                          width: 40,
+                                        ),
+                                        Text(
+                                          "Price",
+                                          style: CheersStyles.h5s,
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                              SizedBox(
+                                height: 320,
+                                child: SingleChildScrollView(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: checkout.length,
+                                    itemBuilder: (context, index) {
+                                      final item = checkout[index];
+                                      return ListTile(
+                                        title: Text(item['name']),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Color(0xffFF6E1F),
                                               ),
-                                            );
-                                          },
+                                              onPressed: () =>
+                                                  removeFromCheckout(item),
+                                            ),
+                                            Text('${item['quantity']}'),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.add_circle_outline,
+                                                color: Color(0xffFF6E1F),
+                                              ),
+                                              onPressed: () =>
+                                                  addToCheckout(item),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            Text(
+                                                "\$${(item['price'] * item['quantity'])}")
+                                          ],
                                         ),
                                       );
-                                    })
-                              ],
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const Divider(),
+                              Container(
+                                decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20)),
+                                    color: Color(0xffF1F1F1)),
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Total",
+                                      style: CheersStyles.h4s,
+                                    ),
+                                    Text(
+                                      total.toString(),
+                                      style: CheersStyles.h4s,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          width: screenWidth < 600
+                              ? 300
+                              : 1000, // Adjust button width for smaller screens
+                          child: ElevatedButton(
+                            onPressed: () {
+                              checkIfEmpty();
+                            },
+                            style: CheersStyles.buttonMain,
+                            child: const Text(
+                              'Send to Payment Pad',
+                              style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 10),
-                      Container(
-                        height: 120,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  // Your button action here
-                                  print("Container button tapped!");
-                                },
-                                borderRadius: BorderRadius.circular(
-                                    20), // Optional: Matches Container's border radius
-                                child: Container(
-                                  width: 130,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffF8F8F8), // Button color
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Tap Me",
-                                      style: TextStyle(
-                                        color: const Color(0xffF19A6F),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  // Your button action here
-                                  setState(() {
-                                    itemsFuture = fetchCocktails();
-                                    title = "Cocktails";
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(
-                                    20), // Optional: Matches Container's border radius
-                                child: Container(
-                                  width: 130,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffF8F8F8), // Button color
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Cocktails",
-                                      style: TextStyle(
-                                        color: const Color(0xffF19A6F),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  // Your button action here
-                                  setState(() {
-                                    itemsFuture = fetchWines();
-                                    title = "Wines";
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(
-                                    20), // Optional: Matches Container's border radius
-                                child: Container(
-                                  width: 130,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffF8F8F8), // Button color
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Wine",
-                                      style: TextStyle(
-                                        color: const Color(0xffF19A6F),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  // Your button action here
-                                  print("Container button tapped!");
-                                },
-                                borderRadius: BorderRadius.circular(
-                                    20), // Optional: Matches Container's border radius
-                                child: Container(
-                                  width: 130,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffF8F8F8), // Button color
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Tap Me",
-                                      style: TextStyle(
-                                        color: const Color(0xffF19A6F),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  // Your button action here
-                                  print("Container button tapped!");
-                                },
-                                borderRadius: BorderRadius.circular(
-                                    20), // Optional: Matches Container's border radius
-                                child: Container(
-                                  width: 130,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffF8F8F8), // Button color
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      "Tap Me",
-                                      style: TextStyle(
-                                        color: const Color(0xffF19A6F),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ]),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-
-              // Checkout Section
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 20, top: 20, bottom: 20),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Color(0xffF8F8F8)),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 20, bottom: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "Checkout",
-                                    style: CheersStyles.h3ss,
-                                  ),
-                                  ElevatedButton(
-                                      style: ButtonStyle(
-                                          textStyle: MaterialStateProperty.all(
-                                              const TextStyle(
-                                                  fontFamily: "Product Sans")),
-                                          minimumSize: MaterialStateProperty.all(
-                                              const Size(40, 40)),
-                                          foregroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white),
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 32,
-                                                  vertical: 16)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  const Color(0xffFF6E1F)),
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ))),
-                                      onPressed: () {
-                                        setState(() {
-                                          checkout.clear();
-                                        });
-                                      },
-                                      child: const Text("Void"))
-                                ],
-                              ),
-                            ),
-                            Container(
-                                height: 40,
-                                color: const Color(0xffF1F1F1),
-                                child: const ListTile(
-                                  leading: Text(
-                                    "Name",
-                                    style: CheersStyles.h5s,
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "QTY",
-                                        style: CheersStyles.h5s,
-                                      ),
-                                      SizedBox(
-                                        width: 40,
-                                      ),
-                                      Text(
-                                        "Price",
-                                        style: CheersStyles.h5s,
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                            SizedBox(
-                              height: 320,
-                              child: SingleChildScrollView(
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: checkout.length,
-                                  itemBuilder: (context, index) {
-                                    final item = checkout[index];
-                                    return ListTile(
-                                      title: Text(item['name']),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.remove_circle_outline,
-                                              color: Color(0xffFF6E1F),
-                                            ),
-                                            onPressed: () =>
-                                                removeFromCheckout(item),
-                                          ),
-                                          Text('${item['quantity']}'),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.add_circle_outline,
-                                              color: Color(0xffFF6E1F),
-                                            ),
-                                            onPressed: () =>
-                                                addToCheckout(item),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Text(
-                                              "\$${(item['price'] * item['quantity'])}")
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            const Divider(),
-                            Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(20),
-                                      bottomLeft: Radius.circular(20)),
-                                  color: Color(0xffF1F1F1)),
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "Total",
-                                    style: CheersStyles.h4s,
-                                  ),
-                                  Text(
-                                    total.toString(),
-                                    style: CheersStyles.h4s,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: screenWidth < 600
-                            ? 300
-                            : 1000, // Adjust button width for smaller screens
-                        child: ElevatedButton(
-                          onPressed: () {
-                            checkIfEmpty();
-                          },
-                          style: CheersStyles.buttonMain,
-                          child: const Text(
-                            'Send to Payment Pad',
-                            style: TextStyle(
-                              fontFamily: 'Product Sans',
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

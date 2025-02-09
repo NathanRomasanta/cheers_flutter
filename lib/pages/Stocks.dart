@@ -84,9 +84,9 @@ class _StocksPageState extends State<StocksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFFFDFA),
+      backgroundColor: const Color(0xffF4F1EA),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,94 +99,7 @@ class _StocksPageState extends State<StocksPage> {
                   style: CheersStyles.h1s,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width *
-                                0.8, // 80% of screen width
-                            height: MediaQuery.of(context).size.height *
-                                0.8, // 60% of screen height
-                            padding: const EdgeInsets.all(16),
-                            child: Column(children: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    _submitOrder();
-                                  },
-                                  child: const Text("Clear Form")),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Close")),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Select Ingredients'),
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children:
-                                              ingredients.map((ingredient) {
-                                            return ListTile(
-                                              title:
-                                                  Text('${ingredient['name']}'),
-                                              onTap: () =>
-                                                  _selectIngredient(ingredient),
-                                            );
-                                          }).toList(),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Close'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: const Text("Order more stock")),
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: selectedIngredients.length,
-                                  itemBuilder: (context, index) {
-                                    var ingredient = selectedIngredients[index];
-                                    return ListTile(
-                                      title: Text('${ingredient['name']}'),
-                                      subtitle: ingredient['isLiquor']
-                                          ? TextField(
-                                              decoration: const InputDecoration(
-                                                  labelText: 'quantity'),
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              onChanged: (value) {
-                                                _updateQuantity(
-                                                    ingredient['id'],
-                                                    int.parse(value));
-                                              },
-                                            )
-                                          : null,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ]),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  onPressed: () {},
                   style: CheersStyles.buttonMain,
                   child: const Text("Order"),
                 )
@@ -203,12 +116,15 @@ class _StocksPageState extends State<StocksPage> {
                 child: Column(
                   children: [
                     const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Item Name"),
-                        Text("Quantity"),
+                        Text("Item Name/ID"),
+                        SizedBox(width: 60),
+                        Text("Stock Count"),
+                        SizedBox(width: 60),
                         Text("Item ID"),
+                        SizedBox(width: 60),
                         Text("Ounces/Bottle"),
+                        SizedBox(width: 60),
                         Text("Action"),
                       ],
                     ),
@@ -234,32 +150,59 @@ class _StocksPageState extends State<StocksPage> {
                                   Map<String, dynamic> data =
                                       document.data() as Map<String, dynamic>;
                                   String itemName = data['name'];
+                                  String itemID = data['id'];
                                   String itemQuantity =
-                                      data['runningCount'].toString();
+                                      data['runningCount'].round().toString();
                                   String ouncesPerBottle =
                                       data['ouncesPerBottle'].toString();
                                   String itemPrice = data['id'].toString();
 
-                                  return Container(
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Color.fromARGB(255, 228, 228,
-                                              228), // Border color
-                                          width: 1.0, // Border width
+                                  String ouncesLeft =
+                                      ((data['ouncesPerBottle'] *
+                                                  data['runningCount']) %
+                                              data['ouncesPerBottle'])
+                                          .round()
+                                          .toString();
+
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Color.fromARGB(255, 228, 228,
+                                                228), // Border color
+                                            width: 1.0, // Border width
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    child: ListTile(
-                                      contentPadding: const EdgeInsets.all(5),
-                                      tileColor: Colors.white,
-                                      title: Row(
+                                      child: Row(
                                         children: [
-                                          Expanded(child: Text(itemName)),
-                                          Expanded(child: Text(itemQuantity)),
-                                          Expanded(child: Text(itemPrice)),
-                                          Expanded(
-                                              child: Text(ouncesPerBottle)),
+                                          SizedBox(
+                                            width: 50,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(itemName),
+                                                Text(
+                                                  itemID,
+                                                  style: const TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(width: 120),
+                                          Text(
+                                              "$itemQuantity bottles and ${ouncesLeft} ounces left"),
+                                          const SizedBox(width: 110),
+                                          Text(itemPrice),
+                                          const SizedBox(width: 110),
+                                          Text(ouncesPerBottle),
                                           IconButton(
                                               onPressed: () {
                                                 firebaseService
