@@ -122,7 +122,7 @@ class _StockOrderState extends State<StockOrder> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-      padding: EdgeInsets.all(30),
+      padding: const EdgeInsets.all(20),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

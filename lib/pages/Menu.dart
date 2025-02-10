@@ -342,11 +342,7 @@ class _POSPageState extends State<POSPage> {
       print(items['ingredients']);
     }
     try {
-      await _firestore
-          .collection('Accounts')
-          .doc(user.email)
-          .collection("transactions")
-          .add({
+      await _firestore.collection('Transactions').add({
         'time': Timestamp.now(),
         'baristaUID': user.email,
         'total': total,
@@ -401,11 +397,6 @@ class _POSPageState extends State<POSPage> {
     });
   }
 
-  void _filterItems(String query) {
-    setState(() {});
-  }
-
-  @override
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -427,7 +418,7 @@ class _POSPageState extends State<POSPage> {
                       fontFamily: 'Product Sans'),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20,
@@ -474,7 +465,7 @@ class _POSPageState extends State<POSPage> {
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           height: 50,
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -607,7 +598,7 @@ class _POSPageState extends State<POSPage> {
                                         title,
                                         style: CheersStyles.h3ss,
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       SizedBox(
                                         height: 40,
                                         width:

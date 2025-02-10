@@ -63,9 +63,11 @@ class _InventoryOrdersState extends State<InventoryOrders> {
             });
           } else {
             await stockCollection.doc(ingredientId).set({
-              'id': ingredient,
+              'id': ingredientId,
               'name': ingredientName,
               'quantity': ingredientQuantity,
+              'runningCount': 1,
+              'ouncesPerBottle': 1,
             });
           }
         }
