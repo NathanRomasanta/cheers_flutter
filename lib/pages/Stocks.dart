@@ -198,7 +198,7 @@ class _StocksPageState extends State<StocksPage> {
                                           ),
                                           const SizedBox(width: 120),
                                           Text(
-                                              "$itemQuantity bottles and ${ouncesLeft} ounces left"),
+                                              "$itemQuantity bottles and $ouncesLeft ounces left"),
                                           const SizedBox(width: 110),
                                           Text(itemPrice),
                                           const SizedBox(width: 110),
