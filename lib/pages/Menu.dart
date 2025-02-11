@@ -332,6 +332,7 @@ class _POSPageState extends State<POSPage> {
             .doc(user.email)
             .collection('stock');
 
+    int? totalItems = 0;
     final snapshot = await stockCollection.get();
 
     final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
@@ -341,17 +342,23 @@ class _POSPageState extends State<POSPage> {
     for (var items in checkout) {
       print(items['ingredients']);
     }
+
+    for (var items in checkout) {
+      totalItems = items['quantity'] + totalItems;
+    }
     try {
       await _firestore.collection('Transactions').add({
         'time': Timestamp.now(),
         'baristaUID': user.email,
         'total': total,
         'items': checkout,
+        'totalItems': totalItems
       });
       Fluttertoast.showToast(
           msg: 'Transaction Done', gravity: ToastGravity.TOP);
       setState(() {
         checkout.clear();
+        totalItems = 0;
 
         Navigator.push(
           context,

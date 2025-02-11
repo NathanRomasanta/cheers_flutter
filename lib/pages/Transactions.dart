@@ -3,6 +3,7 @@ import 'package:cheers_flutter/services/FirestoreService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting the date
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
@@ -65,6 +66,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('Transactions')
+                            .orderBy('time', descending: true)
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
@@ -83,33 +85,52 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   List transactionItemList = data['items'];
                                   String transactionID = document.id;
                                   double transactionTotal = data['total'];
-                                  Timestamp transactionDate = data['time'];
+
                                   String baristaUID = data['baristaUID'];
 
+                                  Timestamp timestamp = data['time'];
+
+                                  DateTime dateTime = timestamp
+                                      .toDate(); // Convert Firestore timestamp to DateTime
+
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd HH:mm:ss')
+                                          .format(dateTime);
+
                                   if (baristaUID == user.email) {
-                                    return Container(
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Color.fromARGB(255, 228, 228,
-                                                228), // Border color
-                                            width: 1.0, // Border width
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 10.0, top: 10),
+                                      child: Container(
+                                          decoration: const BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Color.fromARGB(255, 228,
+                                                    228, 228), // Border color
+                                                width: 1.0, // Border width
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      child: ListTile(
-                                        contentPadding: const EdgeInsets.all(5),
-                                        tileColor: Colors.white,
-                                        title: Row(
-                                          children: [
-                                            Expanded(
-                                                child: Text(transactionID)),
-                                            Expanded(
-                                                child: Text(transactionDate
-                                                    .toString())),
-                                            Expanded(
-                                                child: Text(transactionTotal
-                                                    .toString())),
+                                          child: Row(children: [
+                                            SizedBox(
+                                                width: 150,
+                                                child: Center(
+                                                    child:
+                                                        Text(formattedDate))),
+                                            const SizedBox(width: 50),
+                                            SizedBox(
+                                                width: 250,
+                                                child: Center(
+                                                    child:
+                                                        Text(transactionID))),
+                                            const SizedBox(width: 50),
+                                            SizedBox(
+                                                width: 100,
+                                                child: Center(
+                                                    child: Text(
+                                                        'transactionTotalItems'
+                                                            .toString()))),
+                                            const SizedBox(width: 30),
                                             IconButton(
                                                 onPressed: () {
                                                   showDialog(
@@ -117,55 +138,75 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                     builder: (context) {
                                                       return AlertDialog(
                                                         title: const Text(
-                                                            'Transaction Details'),
-                                                        content: SizedBox(
-                                                          height: 300,
-                                                          width: 300,
-                                                          child:
-                                                              ListView.builder(
-                                                            itemCount:
-                                                                transactionItemList
-                                                                    .length,
-                                                            itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    int index) {
-                                                              return Card(
-                                                                elevation:
-                                                                    3, // Adds a subtle shadow
-                                                                margin: const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical:
-                                                                        8),
-                                                                child: ListTile(
-                                                                  leading: Text(
-                                                                      transactionItemList[index]
-                                                                              [
-                                                                              "quantity"]
-                                                                          .toString()),
-                                                                  title: Text(
-                                                                    transactionItemList[
-                                                                            index]
-                                                                        [
-                                                                        "name"],
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            18,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  trailing: Text((transactionItemList[index]
-                                                                              [
-                                                                              "quantity"] *
-                                                                          transactionItemList[index]
-                                                                              [
-                                                                              "price"])
-                                                                      .toString()),
-                                                                ),
-                                                              );
-                                                            },
-                                                          ),
+                                                          'Stock Details',
+                                                          style: CheersStyles
+                                                              .alertDialogHeader,
                                                         ),
+                                                        content: SizedBox(
+                                                            height: 300,
+                                                            width: 250,
+                                                            child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          10),
+                                                                  Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(transactionItemList[
+                                                                              index]
+                                                                          [
+                                                                          'name']),
+                                                                      const Text(
+                                                                        "Item Quantity",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.grey),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          20),
+                                                                  Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(transactionItemList[index]
+                                                                              [
+                                                                              'price']
+                                                                          .toString()),
+                                                                      const Text(
+                                                                        "Item Quantity",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.grey),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          20),
+                                                                ])),
                                                         actions: [
                                                           TextButton(
                                                             onPressed: () {
@@ -175,7 +216,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                                   .pop();
                                                             },
                                                             child: const Text(
-                                                                'Okay'),
+                                                              'Okay',
+                                                              style: CheersStyles
+                                                                  .alertTextButton,
+                                                            ),
                                                           ),
                                                         ],
                                                       );
@@ -183,9 +227,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   );
                                                 },
                                                 icon: const Icon(Icons.menu))
-                                          ],
-                                        ),
-                                      ),
+                                          ])),
                                     );
                                   } else {
                                     return Container();

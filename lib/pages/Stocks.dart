@@ -118,13 +118,13 @@ class _StocksPageState extends State<StocksPage> {
                     const Row(
                       children: [
                         Text("Item Name/ID"),
-                        SizedBox(width: 60),
+                        SizedBox(width: 145),
                         Text("Stock Count"),
-                        SizedBox(width: 60),
-                        Text("Item ID"),
-                        SizedBox(width: 60),
+                        SizedBox(width: 120),
                         Text("Ounces/Bottle"),
-                        SizedBox(width: 60),
+                        SizedBox(width: 90),
+                        Text("Status"),
+                        Spacer(),
                         Text("Action"),
                       ],
                     ),
@@ -151,11 +151,12 @@ class _StocksPageState extends State<StocksPage> {
                                       document.data() as Map<String, dynamic>;
                                   String itemName = data['name'];
                                   String itemID = data['id'];
-                                  String itemQuantity =
-                                      data['runningCount'].round().toString();
+                                  int itemQuantity =
+                                      data['runningCount'].truncate();
                                   String ouncesPerBottle =
                                       data['ouncesPerBottle'].toString();
-                                  String itemPrice = data['id'].toString();
+
+                                  bool isLiquor = data['isLiquor'];
 
                                   String ouncesLeft =
                                       ((data['ouncesPerBottle'] *
@@ -197,18 +198,221 @@ class _StocksPageState extends State<StocksPage> {
                                             ),
                                           ),
                                           const SizedBox(width: 120),
-                                          Text(
-                                              "$itemQuantity bottles and $ouncesLeft ounces left"),
-                                          const SizedBox(width: 110),
-                                          Text(itemPrice),
-                                          const SizedBox(width: 110),
-                                          Text(ouncesPerBottle),
+                                          SizedBox(
+                                            width: 200,
+                                            child: Center(
+                                              child: Text(isLiquor
+                                                  ? "${itemQuantity.toString()} bottles and $ouncesLeft ounces left"
+                                                  : 'In Stock'),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 75),
+                                          SizedBox(
+                                              width: 50,
+                                              child: Center(
+                                                  child:
+                                                      Text(ouncesPerBottle))),
+                                          const SizedBox(width: 30),
+                                          SizedBox(
+                                            width: 200,
+                                            child: Center(
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                decoration: BoxDecoration(
+                                                  color: isLiquor
+                                                      ? (itemQuantity < 5
+                                                          ? Colors.red
+                                                          : Colors.green)
+                                                      : Colors
+                                                          .green, // Default green if not liquor
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  isLiquor
+                                                      ? (itemQuantity < 5
+                                                          ? 'Low Stock'
+                                                          : 'In Stock')
+                                                      : 'In Stock',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
                                           IconButton(
                                               onPressed: () {
-                                                firebaseService
-                                                    .deleteItem(docID);
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        'Stock Details',
+                                                        style: CheersStyles
+                                                            .alertDialogHeader,
+                                                      ),
+                                                      content: SizedBox(
+                                                          height: 300,
+                                                          width: 250,
+                                                          child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        itemName),
+                                                                    const Text(
+                                                                      "Item Name",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.grey),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        itemID),
+                                                                    const Text(
+                                                                      "Item ID",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.grey),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(isLiquor
+                                                                        ? "${itemQuantity.toString()} bottles and $ouncesLeft ounces left"
+                                                                        : 'In Stock'),
+                                                                    const Text(
+                                                                      "Item Quantity",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.grey),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        ouncesPerBottle),
+                                                                    const Text(
+                                                                      "Ounces/bottle",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.grey),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 20),
+                                                                Container(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: isLiquor
+                                                                        ? (itemQuantity <
+                                                                                5
+                                                                            ? Colors
+                                                                                .red
+                                                                            : Colors
+                                                                                .green)
+                                                                        : Colors
+                                                                            .green, // Default green if not liquor
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12),
+                                                                  ),
+                                                                  child: Text(
+                                                                    isLiquor
+                                                                        ? (itemQuantity <
+                                                                                5
+                                                                            ? 'Low Stock'
+                                                                            : 'In Stock')
+                                                                        : 'In Stock',
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ])),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            // Close the dialog
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: const Text(
+                                                            'Okay',
+                                                            style: CheersStyles
+                                                                .alertTextButton,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
                                               },
-                                              icon: const Icon(Icons.delete))
+                                              icon: const Icon(Icons.menu))
                                         ],
                                       ),
                                     ),

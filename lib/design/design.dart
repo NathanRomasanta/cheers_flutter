@@ -52,6 +52,19 @@ class CheersStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle alertDialogHeader = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 20,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle alertTextButton = TextStyle(
+    fontFamily: 'Product Sans',
+    color: const Color(0xffFF6E1F),
+    fontWeight: FontWeight.w700,
+  );
+
   static const TextStyle h3ss = TextStyle(
     fontFamily: 'Product Sans',
     fontSize: 21,
