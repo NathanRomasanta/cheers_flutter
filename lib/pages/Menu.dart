@@ -450,9 +450,9 @@ class _POSPageState extends State<POSPage> {
               const SizedBox(
                 width: 30,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 20.0),
-                child: Text("John Doe"),
+                child: Text(user.email.toString(), style: CheersStyles.h7s),
               ),
               const SizedBox(
                 width: 30,
