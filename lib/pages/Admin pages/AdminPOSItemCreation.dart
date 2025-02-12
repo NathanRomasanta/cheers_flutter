@@ -18,6 +18,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   String name = '';
   String price = '';
   double total = 0;
+  String selectedOption = 'Cocktails';
 
   @override
   void initState() {
@@ -59,22 +60,106 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
   }
 
   // Submit selected ingredients to Firestore
-  void _submitOrder() async {
-    try {
-      await _firestore.collection('Pos_Items').add({
-        'name': name,
-        'price': int.parse(price),
-        'ingredients': selectedIngredients,
-      });
-      Fluttertoast.showToast(
-          msg: 'POS Item Created', gravity: ToastGravity.TOP);
-    } catch (error) {
-      Fluttertoast.showToast(msg: error.toString(), gravity: ToastGravity.TOP);
+  void _addNewItem() async {
+    if (selectedOption == "Cocktails") {
+      try {
+        await _firestore
+            .collection('Pos_Items')
+            .doc('cocktails')
+            .collection('cocktail_items')
+            .add({
+          'name': name,
+          'price': int.parse(price),
+          'ingredients': selectedIngredients,
+        });
+        Fluttertoast.showToast(
+            msg: 'POS Item Created', gravity: ToastGravity.TOP);
+      } catch (error) {
+        Fluttertoast.showToast(
+            msg: error.toString(), gravity: ToastGravity.TOP);
+      }
+    } else if (selectedOption == "Wines") {
+      try {
+        await _firestore
+            .collection('Pos_Items')
+            .doc('wines')
+            .collection('wine_items')
+            .add({
+          'name': name,
+          'price': int.parse(price),
+          'ingredients': selectedIngredients,
+        });
+        Fluttertoast.showToast(
+            msg: 'POS Item Created', gravity: ToastGravity.TOP);
+      } catch (error) {
+        Fluttertoast.showToast(
+            msg: error.toString(), gravity: ToastGravity.TOP);
+      }
+    } else if (selectedOption == "Beers") {
+      try {
+        await _firestore
+            .collection('Pos_Items')
+            .doc('beers')
+            .collection('beer_items')
+            .add({
+          'name': name,
+          'price': int.parse(price),
+          'ingredients': selectedIngredients,
+        });
+        Fluttertoast.showToast(
+            msg: 'POS Item Created', gravity: ToastGravity.TOP);
+      } catch (error) {
+        Fluttertoast.showToast(
+            msg: error.toString(), gravity: ToastGravity.TOP);
+      }
+    } else if (selectedOption == "Food") {
+      try {
+        await _firestore
+            .collection('Pos_Items')
+            .doc('food')
+            .collection('food_items')
+            .add({
+          'name': name,
+          'price': int.parse(price),
+          'ingredients': selectedIngredients,
+        });
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('POS Item Created!'),
+              content: const Text('POS Item successfully created!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Close',
+                    style: TextStyle(color: Color(0xffFF6E1F)),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
+        setState(() {
+          selectedIngredients.clear();
+          name = '';
+          price = '';
+        });
+      } catch (error) {
+        Fluttertoast.showToast(
+            msg: error.toString(), gravity: ToastGravity.TOP);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Default selected option
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(50),
@@ -83,31 +168,23 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Inventory Item Creation", style: CheersStyles.h1s),
+              const Text("POS Item Creation", style: CheersStyles.h1s),
               const SizedBox(height: 15),
               const Text(
-              "Item Name",
-              style: CheersStyles.inputBoxLabels,
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: 500,
-              child: TextField(
-                decoration: const InputDecoration(labelText: 'Drink Name'),
-                onChanged: (value) {
-                  setState(() {
-                    name = value;
-                  });
-                },
+                "Item Name",
+                style: CheersStyles.inputBoxLabels,
               ),
-            ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Drink Name'),
-                onChanged: (value) {
-                  setState(() {
-                    name = value;
-                  });
-                },
+              const SizedBox(height: 15),
+              SizedBox(
+                width: 500,
+                child: TextField(
+                  decoration: const InputDecoration(labelText: 'Drink Name'),
+                  onChanged: (value) {
+                    setState(() {
+                      name = value;
+                    });
+                  },
+                ),
               ),
               TextField(
                 decoration: const InputDecoration(labelText: 'Price'),
@@ -149,9 +226,26 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                 child: const Text('Select Ingredient'),
               ),
               const SizedBox(height: 20),
+              DropdownButton<String>(
+                value: selectedOption,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedOption = newValue!;
+                  });
+                },
+                items: <String>['Cocktails', 'Wines', 'Beers', 'Food']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
               const Text('Selected Ingredients:'),
-              Expanded(
+              SizedBox(
+                height: 200, // Adjust height as needed
                 child: ListView.builder(
+                  shrinkWrap: true,
                   itemCount: selectedIngredients.length,
                   itemBuilder: (context, index) {
                     var ingredient = selectedIngredients[index];
@@ -175,7 +269,7 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submitOrder,
+                onPressed: _addNewItem,
                 child: const Text('Submit Order'),
               ),
             ],
