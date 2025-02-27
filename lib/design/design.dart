@@ -4,7 +4,7 @@ class CheersStyles {
   static InputDecoration inputBox = InputDecoration(
     labelText: "",
     filled: true, // Enables the background color
-    fillColor: Colors.grey[200], // Light gray background
+    fillColor: Colors.white, // Light gray background
     contentPadding:
         const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
     border: OutlineInputBorder(

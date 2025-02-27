@@ -1,3 +1,4 @@
+import 'package:cheers_flutter/pages/ItemAccounts.dart';
 import 'package:cheers_flutter/pages/Menu.dart';
 import 'package:cheers_flutter/pages/Payment.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
@@ -65,6 +66,14 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 ),
                 title: const Text("Orders"),
                 body: const StockOrder()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.sip,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("Item Accounts"),
+                body: const ItemAccounts()),
             PaneItem(
                 icon: const Icon(
                   Icons.settings,

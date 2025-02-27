@@ -91,105 +91,106 @@ class _AdminItemCreationState extends State<AdminItemCreation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color(0xffF4F1EA),
         body: Padding(
-      padding: const EdgeInsets.all(50.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Inventory Item Creation", style: CheersStyles.h1s),
-            const SizedBox(height: 15),
-            const Text(
-              "Item Name",
-              style: CheersStyles.inputBoxLabels,
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: 500,
-              child: TextField(
-                decoration: CheersStyles.inputBox,
-                controller: itemNameController,
-              ),
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              "Item ID",
-              style: CheersStyles.inputBoxLabels,
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: 400,
-              child: TextField(
-                decoration: CheersStyles.inputBox,
-                controller: itemIDController,
-              ),
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              "Is it a liquor",
-              style: CheersStyles.inputBoxLabels,
-            ),
-            Row(
+          padding: const EdgeInsets.all(50.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text("Inventory Item Creation", style: CheersStyles.h1s),
+                const SizedBox(height: 15),
                 const Text(
-                  "Yes",
+                  "Item Name",
                   style: CheersStyles.inputBoxLabels,
                 ),
-                Checkbox(
-                  activeColor: Colors.orange,
-                  value: isLiquor,
-                  onChanged: (value) {
-                    setState(() {
-                      isLiquor = value!;
-                    });
-                  },
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: 500,
+                  child: TextField(
+                    decoration: CheersStyles.inputBox,
+                    controller: itemNameController,
+                  ),
                 ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Item ID",
+                  style: CheersStyles.inputBoxLabels,
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: 400,
+                  child: TextField(
+                    decoration: CheersStyles.inputBox,
+                    controller: itemIDController,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Is it a liquor",
+                  style: CheersStyles.inputBoxLabels,
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      "Yes",
+                      style: CheersStyles.inputBoxLabels,
+                    ),
+                    Checkbox(
+                      activeColor: Colors.orange,
+                      value: isLiquor,
+                      onChanged: (value) {
+                        setState(() {
+                          isLiquor = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                if (isLiquor) ...[
+                  Row(
+                    children: [
+                      const Text(
+                        "Starting Quantity(Bottle)",
+                        style: CheersStyles.inputBoxLabels,
+                      ),
+                      const SizedBox(width: 15),
+                      SizedBox(
+                        width: 200,
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: CheersStyles.inputBox,
+                          controller: itemQuantityController,
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      const Text(
+                        "Ounce per bottle",
+                        style: CheersStyles.inputBoxLabels,
+                      ),
+                      const SizedBox(width: 15),
+                      SizedBox(
+                        width: 200,
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: CheersStyles.inputBox,
+                          controller: ouncePerBottleController,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+                const SizedBox(height: 15),
+                ElevatedButton(
+                    style: CheersStyles.buttonMain,
+                    onPressed: () {
+                      createItem();
+                    },
+                    child: const Text("Create Item")),
               ],
             ),
-            if (isLiquor) ...[
-              Row(
-                children: [
-                  const Text(
-                    "Starting Quantity(Bottle)",
-                    style: CheersStyles.inputBoxLabels,
-                  ),
-                  const SizedBox(width: 15),
-                  SizedBox(
-                    width: 200,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: CheersStyles.inputBox,
-                      controller: itemQuantityController,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  const Text(
-                    "Ounce per bottle",
-                    style: CheersStyles.inputBoxLabels,
-                  ),
-                  const SizedBox(width: 15),
-                  SizedBox(
-                    width: 200,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: CheersStyles.inputBox,
-                      controller: ouncePerBottleController,
-                    ),
-                  ),
-                ],
-              )
-            ],
-            const SizedBox(height: 15),
-            ElevatedButton(
-                style: CheersStyles.buttonMain,
-                onPressed: () {
-                  createItem();
-                },
-                child: const Text("Create Item")),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 }

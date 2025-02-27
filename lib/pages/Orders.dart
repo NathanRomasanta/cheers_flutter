@@ -208,7 +208,7 @@ class _StockOrderState extends State<StockOrder> {
                                       'Order Slip',
                                       style: CheersStyles.h3ss,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     ),
                                     SizedBox(

@@ -359,6 +359,7 @@ class _POSPageState extends State<POSPage> {
       setState(() {
         checkout.clear();
         totalItems = 0;
+        total = 0;
 
         Navigator.push(
           context,
