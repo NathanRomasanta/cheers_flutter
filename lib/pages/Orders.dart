@@ -4,6 +4,7 @@ import 'package:cheers_flutter/design/design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class StockOrder extends StatefulWidget {
@@ -125,6 +126,20 @@ class _StockOrderState extends State<StockOrder> {
       } catch (error) {
         Fluttertoast.showToast(
             msg: error.toString(), gravity: ToastGravity.TOP);
+
+        AlertDialog(
+          title: const Text('Order Error'),
+          content: const Text('Order not submitted'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
       }
     }
   }
@@ -251,6 +266,10 @@ class _StockOrderState extends State<StockOrder> {
                                                                 keyboardType:
                                                                     TextInputType
                                                                         .number,
+                                                                inputFormatters: <TextInputFormatter>[
+                                                                  FilteringTextInputFormatter
+                                                                      .digitsOnly
+                                                                ],
                                                                 onChanged:
                                                                     (value) {
                                                                   _updateQuantity(

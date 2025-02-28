@@ -240,14 +240,41 @@ class _ItemAccountsState extends State<ItemAccounts> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Transaction Details',
+          title: const Text('Closing Accounts',
               style: CheersStyles.alertDialogHeader),
           content: SizedBox(
             height: 400,
             width: 700,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Select the opening accounts'),
+                const Text('Set the closing accounts amounts'),
+                const SizedBox(height: 10),
+                const Row(
+                  children: [
+                    Text(
+                      "Item Name",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(width: 130),
+                    Text(
+                      "Closing count",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(width: 25),
+                    Text(
+                      "Closing lbs",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(width: 30),
+                    Text(
+                      "Closing oz",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 300,
                   width: 500,
@@ -262,31 +289,31 @@ class _ItemAccountsState extends State<ItemAccounts> {
                         child: Row(
                           children: [
                             Expanded(
-                                flex: 3,
+                                flex: 2,
                                 child: Text(item['name'],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold))),
                             const SizedBox(width: 8),
                             Expanded(
-                                flex: 2,
+                                flex: 1,
                                 child: TextField(
-                                    controller: _controllers[id],
+                                    controller: _controllers4[id],
                                     decoration: const InputDecoration(
                                         border: OutlineInputBorder()),
                                     keyboardType: TextInputType.number)),
                             const SizedBox(width: 8),
                             Expanded(
-                                flex: 2,
+                                flex: 1,
                                 child: TextField(
-                                    controller: _controllers2[id],
+                                    controller: _controllers5[id],
                                     decoration: const InputDecoration(
                                         border: OutlineInputBorder()),
                                     keyboardType: TextInputType.number)),
                             const SizedBox(width: 8),
                             Expanded(
-                                flex: 2,
+                                flex: 1,
                                 child: TextField(
-                                    controller: _controllers3[id],
+                                    controller: _controllers6[id],
                                     decoration: const InputDecoration(
                                         border: OutlineInputBorder()),
                                     keyboardType: TextInputType.number)),
@@ -296,8 +323,24 @@ class _ItemAccountsState extends State<ItemAccounts> {
                     },
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: _setClosingAccounts, child: const Text("Set"))
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 300,
+                    ),
+                    ElevatedButton(
+                        style: CheersStyles.buttonMain,
+                        onPressed: _setClosingAccounts,
+                        child: const Text("Set")),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                        style: CheersStyles.buttonMain,
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        child: const Text("Close"))
+                  ],
+                )
               ],
             ),
           ),

@@ -98,11 +98,6 @@ class _StocksPageState extends State<StocksPage> {
                   "Stock",
                   style: CheersStyles.h1s,
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: CheersStyles.buttonMain,
-                  child: const Text("Order"),
-                )
               ],
             ),
             const SizedBox(height: 20),

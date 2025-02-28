@@ -2,6 +2,7 @@ import 'package:cheers_flutter/services/FirestoreService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class InventoryOrders extends StatefulWidget {
   const InventoryOrders({super.key});
@@ -11,6 +12,7 @@ class InventoryOrders extends StatefulWidget {
 }
 
 class _InventoryOrdersState extends State<InventoryOrders> {
+  String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   final FirebaseService firebaseService = FirebaseService();
 
   Future<void> fulfillOrder(
@@ -24,6 +26,13 @@ class _InventoryOrdersState extends State<InventoryOrders> {
           firestore.collection('Accounts').doc(baristaEmail);
 
       CollectionReference stockCollection = baristaDoc.collection('stock');
+
+      CollectionReference cashoutCollection = firestore
+          .collection('Cashout')
+          .doc(baristaEmail)
+          .collection("Date")
+          .doc(formattedDate)
+          .collection("Requests");
 
       // Process each ingredient in the order list
       for (var ingredient in orderList) {
@@ -54,7 +63,7 @@ class _InventoryOrdersState extends State<InventoryOrders> {
         } else {
           // If the document does not exist, create a new document
           if (isLiquor) {
-            await stockCollection.doc(ingredientId).set({
+            stockCollection.doc(ingredientId).set({
               'id': ingredientId,
               'name': ingredientName,
               'quantity': ingredientQuantity,
@@ -62,7 +71,15 @@ class _InventoryOrdersState extends State<InventoryOrders> {
               'ouncesPerBottle': ouncesPerBottle,
             });
           } else {
-            await stockCollection.doc(ingredientId).set({
+            stockCollection.doc(ingredientId).set({
+              'id': ingredientId,
+              'name': ingredientName,
+              'quantity': ingredientQuantity,
+              'runningCount': 1,
+              'ouncesPerBottle': 1,
+            });
+
+            cashoutCollection.doc(ingredientId).set({
               'id': ingredientId,
               'name': ingredientName,
               'quantity': ingredientQuantity,
@@ -72,6 +89,11 @@ class _InventoryOrdersState extends State<InventoryOrders> {
           }
         }
       }
+
+      cashoutCollection.doc().set({
+        'id': baristaEmail,
+        'items': orderList,
+      });
 
       Fluttertoast.showToast(msg: "Order fulfilled successfully!");
 

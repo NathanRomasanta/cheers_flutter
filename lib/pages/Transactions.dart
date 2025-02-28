@@ -64,228 +64,228 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       ],
                     ),
                     const Divider(),
-                    StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('Transactions')
-                            .orderBy('time', descending: true)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List itemList = snapshot.data!.docs;
+                    SizedBox(
+                      height: 500,
+                      width: 1150,
+                      child: SingleChildScrollView(
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Transactions')
+                                .orderBy('time', descending: true)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                List itemList = snapshot.data!.docs;
 
-                            return ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: itemList.length,
-                                itemBuilder: (context, index) {
-                                  DocumentSnapshot document = itemList[index];
+                                return ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: itemList.length,
+                                    itemBuilder: (context, index) {
+                                      DocumentSnapshot document =
+                                          itemList[index];
 
-                                  Map<String, dynamic> data =
-                                      document.data() as Map<String, dynamic>;
+                                      Map<String, dynamic> data = document
+                                          .data() as Map<String, dynamic>;
 
-                                  List transactionItemList = data['items'];
-                                  String transactionID = document.id;
-                                  double transactionTotal = data['total'];
-                                  int totalItems = data['totalItems'];
+                                      List transactionItemList = data['items'];
+                                      String transactionID = document.id;
+                                      double transactionTotal = data['total'];
+                                      int totalItems = data['totalItems'];
 
-                                  String baristaUID = data['baristaUID'];
+                                      String baristaUID = data['baristaUID'];
 
-                                  Timestamp timestamp = data['time'];
+                                      Timestamp timestamp = data['time'];
 
-                                  DateTime dateTime = timestamp
-                                      .toDate(); // Convert Firestore timestamp to DateTime
+                                      DateTime dateTime = timestamp
+                                          .toDate(); // Convert Firestore timestamp to DateTime
 
-                                  String formattedDate =
-                                      DateFormat('yyyy-MM-dd HH:mm:ss')
-                                          .format(dateTime);
+                                      String formattedDate =
+                                          DateFormat('yyyy-MM-dd HH:mm:ss')
+                                              .format(dateTime);
 
-                                  if (baristaUID == user.email) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 10.0, top: 10),
-                                      child: Container(
-                                          decoration: const BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: Color.fromARGB(255, 228,
-                                                    228, 228), // Border color
-                                                width: 1.0, // Border width
+                                      if (baristaUID == user.email) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10.0, top: 10),
+                                          child: Container(
+                                              decoration: const BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color: Color.fromARGB(
+                                                        255,
+                                                        228,
+                                                        228,
+                                                        228), // Border color
+                                                    width: 1.0, // Border width
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          child: Row(children: [
-                                            SizedBox(
-                                                width: 150,
-                                                child: Center(
-                                                    child:
-                                                        Text(formattedDate))),
-                                            const SizedBox(width: 50),
-                                            SizedBox(
-                                                width: 250,
-                                                child: Center(
-                                                    child:
-                                                        Text(transactionID))),
-                                            const SizedBox(width: 50),
-                                            SizedBox(
-                                                width: 100,
-                                                child: Center(
-                                                    child: Text(
-                                                        "\$${transactionTotal}"))),
-                                            const SizedBox(width: 70),
-                                            SizedBox(
-                                                width: 100,
-                                                child: Center(
-                                                    child: Text(totalItems
-                                                        .toString()))),
-                                            const Spacer(),
-                                            IconButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        title: const Text(
-                                                          'Transaction Details',
-                                                          style: CheersStyles
-                                                              .alertDialogHeader,
-                                                        ),
-                                                        content: SizedBox(
-                                                            height: 400,
-                                                            width: 700,
-                                                            child: Row(
-                                                              children: [
-                                                                Expanded(
-                                                                    child:
-                                                                        Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
+                                              child: Row(children: [
+                                                SizedBox(
+                                                    width: 150,
+                                                    child: Center(
+                                                        child: Text(
+                                                            formattedDate))),
+                                                const SizedBox(width: 50),
+                                                SizedBox(
+                                                    width: 250,
+                                                    child: Center(
+                                                        child: Text(
+                                                            transactionID))),
+                                                const SizedBox(width: 50),
+                                                SizedBox(
+                                                    width: 100,
+                                                    child: Center(
+                                                        child: Text(
+                                                            "\$${transactionTotal}"))),
+                                                const SizedBox(width: 70),
+                                                SizedBox(
+                                                    width: 100,
+                                                    child: Center(
+                                                        child: Text(totalItems
+                                                            .toString()))),
+                                                const Spacer(),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                              'Transaction Details',
+                                                              style: CheersStyles
+                                                                  .alertDialogHeader,
+                                                            ),
+                                                            content: SizedBox(
+                                                                height: 400,
+                                                                width: 700,
+                                                                child: Row(
                                                                   children: [
-                                                                    const Text(
-                                                                      'Barista UID',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.grey),
-                                                                    ),
-                                                                    Text(
-                                                                        baristaUID),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            15),
-                                                                    const Text(
-                                                                      'Transaction Total',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.grey),
-                                                                    ),
-                                                                    Text(
-                                                                        "\$$transactionTotal"),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            15),
-                                                                    const Text(
-                                                                      'Total Items',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.grey),
-                                                                    ),
-                                                                    Text(totalItems
-                                                                        .toString()),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            15),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            15),
-                                                                    const Text(
-                                                                      'Transaction Date/Time',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.grey),
-                                                                    ),
-                                                                    Text(
-                                                                        formattedDate),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            15),
+                                                                    Expanded(
+                                                                        child:
+                                                                            Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        const Text(
+                                                                          'Barista UID',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                        Text(
+                                                                            baristaUID),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                15),
+                                                                        const Text(
+                                                                          'Transaction Total',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                        Text(
+                                                                            "\$$transactionTotal"),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                15),
+                                                                        const Text(
+                                                                          'Total Items',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                        Text(totalItems
+                                                                            .toString()),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                15),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                15),
+                                                                        const Text(
+                                                                          'Transaction Date/Time',
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                        Text(
+                                                                            formattedDate),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                15),
+                                                                      ],
+                                                                    )),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          const Text(
+                                                                              "Item Details"),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                200, // Adjust height as needed
+                                                                            child:
+                                                                                ListView.builder(
+                                                                              shrinkWrap: true, // Prevents infinite height issues
+                                                                              itemCount: transactionItemList.length, // Ensure you define itemCount
+                                                                              itemBuilder: (context, index) {
+                                                                                return ListTile(
+                                                                                  title: Text(transactionItemList[index]['name']),
+                                                                                  subtitle: Text(transactionItemList[index]['id']),
+                                                                                  trailing: Text("${transactionItemList[index]['quantity']} x ${transactionItemList[index]['price']}"),
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
                                                                   ],
                                                                 )),
-                                                                Expanded(
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      const Text(
-                                                                          "Item Details"),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            200, // Adjust height as needed
-                                                                        child: ListView
-                                                                            .builder(
-                                                                          shrinkWrap:
-                                                                              true, // Prevents infinite height issues
-                                                                          itemCount:
-                                                                              transactionItemList.length, // Ensure you define itemCount
-                                                                          itemBuilder:
-                                                                              (context, index) {
-                                                                            return ListTile(
-                                                                              title: Text(transactionItemList[index]['name']),
-                                                                              subtitle: Text(transactionItemList[index]['id']),
-                                                                              trailing: Text("${transactionItemList[index]['quantity']} x ${transactionItemList[index]['price']}"),
-                                                                            );
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            )),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              // Close the dialog
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            child: const Text(
-                                                              'Okay',
-                                                              style: CheersStyles
-                                                                  .alertTextButton,
-                                                            ),
-                                                          ),
-                                                        ],
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  // Close the dialog
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  'Okay',
+                                                                  style: CheersStyles
+                                                                      .alertTextButton,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
                                                     },
-                                                  );
-                                                },
-                                                icon: const Icon(Icons.menu))
-                                          ])),
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                });
-                          } else {
-                            return const Text("No Stock");
-                          }
-                        }),
+                                                    icon:
+                                                        const Icon(Icons.menu))
+                                              ])),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    });
+                              } else {
+                                return const Text("No Stock");
+                              }
+                            }),
+                      ),
+                    ),
                   ],
                 ),
               ),
