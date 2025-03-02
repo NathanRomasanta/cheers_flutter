@@ -255,33 +255,27 @@ class _StockOrderState extends State<StockOrder> {
                                                   Text('${ingredient['name']}'),
                                                   const SizedBox(width: 15),
                                                   SizedBox(
-                                                    width: 100,
-                                                    child:
-                                                        ingredient['isLiquor']
-                                                            ? TextField(
-                                                                decoration:
-                                                                    const InputDecoration(
-                                                                        labelText:
-                                                                            'Quantity'),
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                inputFormatters: <TextInputFormatter>[
-                                                                  FilteringTextInputFormatter
-                                                                      .digitsOnly
-                                                                ],
-                                                                onChanged:
-                                                                    (value) {
-                                                                  _updateQuantity(
-                                                                      ingredient[
-                                                                          'id'],
-                                                                      int.tryParse(
-                                                                              value) ??
-                                                                          0);
-                                                                },
-                                                              )
-                                                            : null,
-                                                  )
+                                                      width: 100,
+                                                      child: TextField(
+                                                        decoration:
+                                                            const InputDecoration(
+                                                                labelText:
+                                                                    'Quantity'),
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        inputFormatters: <TextInputFormatter>[
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly
+                                                        ],
+                                                        onChanged: (value) {
+                                                          _updateQuantity(
+                                                              ingredient['id'],
+                                                              int.tryParse(
+                                                                      value) ??
+                                                                  0);
+                                                        },
+                                                      ))
                                                 ],
                                               ),
                                               trailing: IconButton(

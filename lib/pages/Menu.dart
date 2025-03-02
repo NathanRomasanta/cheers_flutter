@@ -78,7 +78,7 @@ class _POSPageState extends State<POSPage> {
   Future<List<Map<String, dynamic>>> fetchBeer() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('Pos_Items')
-        .doc('beer')
+        .doc('beers')
         .collection('beer_items')
         .get();
     return snapshot.docs
@@ -95,7 +95,7 @@ class _POSPageState extends State<POSPage> {
     final snapshot = await FirebaseFirestore.instance
         .collection('Pos_Items')
         .doc('wines')
-        .collection('wines_items')
+        .collection('wine_items')
         .get();
     return snapshot.docs
         .map((doc) => {
@@ -141,156 +141,123 @@ class _POSPageState extends State<POSPage> {
   }
 
   void testFunction() async {
-    // Step 1: Reference Firestore stock collection
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference<Map<String, dynamic>> stockCollection =
-        FirebaseFirestore.instance
-            .collection('Accounts')
-            .doc(user.email)
-            .collection('stock');
+        firestore.collection('Accounts').doc(user.email).collection('stock');
 
-    // Step 2: Fetch data from the stock collection
-    final snapshot = await stockCollection.get(); // Retrieve stock data
-    final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
-      return doc.data(); // Convert each document's data to a Map
-    }).toList();
+    // Fetch stock data
+    final snapshot = await stockCollection.get();
+    Map<String, Map<String, dynamic>> stockMap = {
+      for (var doc in snapshot.docs) doc.id: doc.data()
+    };
 
-    // Step 3: Iterate over the checkout list and check stock
-    bool isStockSufficient = true; // To track if stock is enough for all drinks
-
-    List<Map<String, dynamic>> neededIngredients = [];
-
-    print(checkout);
+    // Needed ingredients map
+    Map<String, Map<String, dynamic>> neededIngredients = {};
 
     for (var drink in checkout) {
       List ingredients = drink['ingredients'];
-
       int quantity = drink['quantity'];
+
       for (var ingredient in ingredients) {
-        String ingredientName = ingredient['id'];
+        String ingredientId = ingredient['id'];
+        String ingredientName = ingredient['name'];
         bool isLiquor = ingredient['isLiquor'];
         int ounces = ingredient['ounces'] ?? 0;
 
-        // Check if the ingredient is already in the neededIngredients list
-        var existingIngredient = neededIngredients.firstWhere(
-          (item) => item['id'] == ingredientName,
-          orElse: () => {},
-        );
-
-        if (existingIngredient.isNotEmpty) {
-          // If found, add ounces only if isLiquor is true
+        if (neededIngredients.containsKey(ingredientId)) {
           if (isLiquor) {
-            existingIngredient['ounces'] += ounces;
+            neededIngredients[ingredientId]!['ounces'] += ounces * quantity;
+          } else {
+            neededIngredients[ingredientId]!['quantity'] += quantity;
           }
         } else {
-          neededIngredients.add({
-            'id': ingredientName,
+          neededIngredients[ingredientId] = {
+            'id': ingredientId,
+            'name': ingredientName,
             'isLiquor': isLiquor,
             'ounces': isLiquor ? ounces * quantity : 0,
-          });
+            'quantity':
+                isLiquor ? 0 : quantity, // Track quantity for non-liquor
+          };
         }
       }
-
-      print(stockList);
     }
 
-    for (var items in neededIngredients) {
-      print(items);
-    }
+    bool isStockSufficient = true;
+    List<String> insufficientStockItems = [];
 
-    for (var needed in neededIngredients) {
-      double neededOunces =
-          double.parse(needed['ounces'].toString()); // Ensure it's a double
+    WriteBatch batch = firestore.batch();
 
-      // Find matching item in stockList
-      var stockItem = stockList.firstWhere(
-        (item) =>
-            item['id'].toString() ==
-            needed['id'].toString(), // Ensure comparison is done as Strings
-        orElse: () => {}, // Return an empty map if not found
-      );
+    for (var needed in neededIngredients.values) {
+      if (stockMap.containsKey(needed['id'])) {
+        var stockItem = stockMap[needed['id']]!;
 
-      if (stockItem.isNotEmpty) {
-        if (needed['isLiquor'] == true) {
-          // Ensure correct type conversion to double for ouncesPerBottle and runningCount
+        if (needed['isLiquor']) {
+          // Handling liquor stock update
           double ouncesPerBottle =
               double.parse(stockItem['ouncesPerBottle'].toString());
           double runningCount =
               double.parse(stockItem['runningCount'].toString());
 
           double totalOunces = ouncesPerBottle * runningCount;
+          double neededOunces = double.parse(needed['ounces'].toString());
 
           if (neededOunces <= totalOunces) {
             stockItem['runningCount'] =
                 ((runningCount * ouncesPerBottle) - neededOunces) /
                     ouncesPerBottle;
 
-            try {
-              await _firestore
-                  .collection('Accounts')
-                  .doc(user.email)
-                  .collection("stock")
-                  .doc(stockItem['id']
-                      .toString()) // Ensure document ID is a string
-                  .update({
-                'runningCount': stockItem['runningCount'],
-              });
-              Fluttertoast.showToast(
-                  msg: 'Transaction Done', gravity: ToastGravity.TOP);
-            } catch (error) {
-              Fluttertoast.showToast(
-                  msg: error.toString(), gravity: ToastGravity.TOP);
-            }
+            batch.update(stockCollection.doc(needed['id']), {
+              'runningCount': stockItem['runningCount'],
+            });
           } else {
-            print('Not sufficient for ${needed['id']}');
+            isStockSufficient = false;
+            insufficientStockItems.add(needed['name']);
+          }
+        } else {
+          // Handling non-liquor stock update
+          int currentStock = int.parse(stockItem['runningCount'].toString());
+          int neededQuantity = int.parse(needed['quantity'].toString());
 
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Insufficient Stock'),
-                  content: Text('Stock Insufficient ${needed['name']}'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        // Close the dialog
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Okay'),
-                    ),
-                  ],
-                );
-              },
-            );
+          if (neededQuantity <= currentStock) {
+            stockItem['runningCount'] = currentStock - neededQuantity;
+
+            batch.update(stockCollection.doc(needed['id']), {
+              'runningCount': stockItem['runningCount'],
+            });
+          } else {
+            isStockSufficient = false;
+            insufficientStockItems.add(needed['name']);
           }
         }
       } else {
-        print('No stock found for ${needed['id']}');
-
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Missing Stock'),
-              content: Text('No stock found for ${needed['name']}'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    // Close the dialog
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Okay'),
-                ),
-              ],
-            );
-          },
-        );
-        isStockSufficient = false; // Mark stock as insufficient
+        isStockSufficient = false;
+        insufficientStockItems.add(needed['name']);
       }
     }
 
-// Step 4: Proceed to the next steps if stock is sufficient
     if (isStockSufficient) {
-      _addToTransactions(); // Define what happens next in your workflow
+      await batch.commit();
+      Fluttertoast.showToast(
+          msg: 'Transaction Done', gravity: ToastGravity.TOP);
+      _addToTransactions();
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Insufficient Stock'),
+            content: Text(
+                'Not enough stock for: ${insufficientStockItems.join(", ")}'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Okay'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

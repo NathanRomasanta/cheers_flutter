@@ -202,15 +202,17 @@ class _POSItemCreationScreenState extends State<POSItemCreationScreen> {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('Select Ingredients'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: ingredients.map((ingredient) {
-                          return ListTile(
-                            title: Text(
-                                '${ingredient['name']} - \$${ingredient['price']}'),
-                            onTap: () => _selectIngredient(ingredient),
-                          );
-                        }).toList(),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: ingredients.map((ingredient) {
+                            return ListTile(
+                              title: Text(
+                                  '${ingredient['name']} - \$${ingredient['price']}'),
+                              onTap: () => _selectIngredient(ingredient),
+                            );
+                          }).toList(),
+                        ),
                       ),
                       actions: [
                         TextButton(

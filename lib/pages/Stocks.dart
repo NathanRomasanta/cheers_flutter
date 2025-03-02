@@ -91,10 +91,10 @@ class _StocksPageState extends State<StocksPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   "Stock",
                   style: CheersStyles.h1s,
                 ),
@@ -198,15 +198,17 @@ class _StocksPageState extends State<StocksPage> {
                                             child: Center(
                                               child: Text(isLiquor
                                                   ? "${itemQuantity.toString()} bottles and $ouncesLeft ounces left"
-                                                  : 'In Stock'),
+                                                  : itemQuantity.toString()),
                                             ),
                                           ),
                                           const SizedBox(width: 75),
                                           SizedBox(
                                               width: 50,
                                               child: Center(
-                                                  child:
-                                                      Text(ouncesPerBottle))),
+                                                child: Text(isLiquor
+                                                    ? ouncesPerBottle
+                                                    : "N/A"),
+                                              )),
                                           const SizedBox(width: 30),
                                           SizedBox(
                                             width: 200,
@@ -215,21 +217,17 @@ class _StocksPageState extends State<StocksPage> {
                                                 padding:
                                                     const EdgeInsets.all(8),
                                                 decoration: BoxDecoration(
-                                                  color: isLiquor
-                                                      ? (itemQuantity < 5
-                                                          ? Colors.red
-                                                          : Colors.green)
-                                                      : Colors
-                                                          .green, // Default green if not liquor
+                                                  color: (itemQuantity < 5
+                                                      ? Colors.red
+                                                      : Colors.green),
+                                                  // Default green if not liquor
                                                   borderRadius:
                                                       BorderRadius.circular(12),
                                                 ),
                                                 child: Text(
-                                                  isLiquor
-                                                      ? (itemQuantity < 5
-                                                          ? 'Low Stock'
-                                                          : 'In Stock')
-                                                      : 'In Stock',
+                                                  (itemQuantity < 5
+                                                      ? 'Low Stock'
+                                                      : 'In Stock'),
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold,
