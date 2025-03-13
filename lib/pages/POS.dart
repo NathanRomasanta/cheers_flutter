@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class POSPage extends StatefulWidget {
   const POSPage({super.key});
@@ -293,11 +294,36 @@ class _POSPageState extends State<POSPage> {
   }
 
   void _addToTransactions() async {
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    DateTime now = DateTime.now();
+
+    String currentDateString = "";
+
+    // Define the opening and closing times for the day (9 AM to 4 AM)
+    DateTime startOfDay =
+        DateTime(now.year, now.month, now.day, 9); // 9 AM today
+    DateTime endOfDay =
+        startOfDay.add(Duration(hours: 19)); // 4 AM the next day
+
+    // If the current time is after 9 AM but before 4 AM, use the current day (March 12)
+    // If the current time is between 4 AM and 9 AM, use the previous day (March 11)
+    if (now.isAfter(startOfDay) && now.isBefore(endOfDay)) {
+      currentDateString =
+          DateFormat('MMMM-dd-yyyy').format(startOfDay); // Today's date
+    } else if (now.isAfter(endOfDay) || now.isBefore(startOfDay)) {
+      currentDateString = DateFormat('MMMM-dd-yyyy')
+          .format(startOfDay.add(Duration(days: 1))); // Next day's date
+    }
+
     CollectionReference<Map<String, dynamic>> stockCollection =
         FirebaseFirestore.instance
             .collection('Accounts')
             .doc(user.email)
             .collection('stock');
+    CollectionReference transactions = _db
+        .collection('baristas')
+        .doc(user.email)
+        .collection(currentDateString);
 
     int? totalItems = 0;
     final snapshot = await stockCollection.get();
@@ -314,7 +340,7 @@ class _POSPageState extends State<POSPage> {
       totalItems = items['quantity'] + totalItems;
     }
     try {
-      await _firestore.collection('Transactions').add({
+      await transactions.add({
         'time': Timestamp.now(),
         'baristaUID': user.email,
         'total': total,
@@ -419,7 +445,7 @@ class _POSPageState extends State<POSPage> {
                 width: 30,
               ),
               Padding(
-                padding: EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 20.0),
                 child: Text(user.email.toString(), style: CheersStyles.h7s),
               ),
               const SizedBox(

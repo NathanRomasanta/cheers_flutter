@@ -1,5 +1,8 @@
+import 'package:cheers_flutter/pages/DualStateful.dart';
 import 'package:cheers_flutter/pages/ItemAccounts.dart';
-import 'package:cheers_flutter/pages/Menu.dart';
+import 'package:cheers_flutter/pages/OrderList.dart';
+import 'package:cheers_flutter/pages/POS.dart';
+import 'package:cheers_flutter/pages/POSv2.dart';
 import 'package:cheers_flutter/pages/Payment.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
 import 'package:cheers_flutter/pages/Orders.dart';
@@ -7,6 +10,7 @@ import 'package:cheers_flutter/pages/Stocks.dart';
 import 'package:cheers_flutter/pages/Transactions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
+import 'DualStateful.dart';
 
 class NavigatorGate extends StatefulWidget {
   const NavigatorGate({super.key});
@@ -82,6 +86,30 @@ class _NavigatorGateState extends State<NavigatorGate> {
                 ),
                 title: const Text("Settings"),
                 body: const Settings()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.settings,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("POS"),
+                body: const POSv2()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.send,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("Orders"),
+                body: DualStatefulPage()),
+            PaneItem(
+                icon: const Icon(
+                  Icons.send,
+                  color: Color(0xffFF6E1F),
+                  size: 25,
+                ),
+                title: const Text("Orders"),
+                body: OrderList()),
           ],
           selected: currentPage,
           onChanged: (index) => setState(() {

@@ -41,6 +41,7 @@ dependencies:
   fluttertoast: ^8.2.5
   fluent_ui: ^4.8.7
   intl: ^0.18.1
+  flutter_staggered_grid_view: ^0.7.0
 
 dev_dependencies:
   flutter_test:

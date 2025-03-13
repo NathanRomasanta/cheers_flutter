@@ -93,6 +93,7 @@ class _StockOrderState extends State<StockOrder> {
       try {
         await _firestore.collection('Orders').add({
           'baristaUID': user.email,
+          'status': "Pending",
           'ingredients': selectedIngredients,
         });
         showDialog(
