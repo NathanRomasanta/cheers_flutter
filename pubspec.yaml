@@ -39,8 +39,8 @@ dependencies:
   cloud_firestore: ^4.14.0
   flutter_spinkit: ^5.2.1
   fluttertoast: ^8.2.5
-  fluent_ui: ^4.8.7
-  intl: ^0.18.1
+  fluent_ui: 4.11.2
+  intl: 0.19.0
   flutter_staggered_grid_view: ^0.7.0
 
 dev_dependencies:
