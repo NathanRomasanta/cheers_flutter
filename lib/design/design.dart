@@ -33,14 +33,14 @@ class CheersStyles {
   );
 
   static ButtonStyle buttonMain = ButtonStyle(
-      textStyle: MaterialStateProperty.all(
-          const TextStyle(fontFamily: "Product Sans")),
-      minimumSize: MaterialStateProperty.all(const Size(200, 40)),
-      foregroundColor: MaterialStateProperty.all(Colors.white), // Text color
-      padding: MaterialStateProperty.all(
+      textStyle:
+          WidgetStateProperty.all(const TextStyle(fontFamily: "Product Sans")),
+      minimumSize: WidgetStateProperty.all(const Size(200, 40)),
+      foregroundColor: WidgetStateProperty.all(Colors.white), // Text color
+      padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
-      backgroundColor: MaterialStateProperty.all(const Color(0xffFF6E1F)),
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      backgroundColor: WidgetStateProperty.all(const Color(0xffFF6E1F)),
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       )));
@@ -48,6 +48,13 @@ class CheersStyles {
   static const TextStyle h1s = TextStyle(
     fontFamily: 'Product Sans',
     fontSize: 30,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle posTitleStyle = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 24,
     color: Colors.black,
     fontWeight: FontWeight.w700,
   );

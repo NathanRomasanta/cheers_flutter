@@ -5,7 +5,53 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 late List<dynamic> itemsFuture;
 
-class DualStatefulPage extends StatelessWidget {
+late List<dynamic> cocktailItems;
+late List<dynamic> wineItems;
+late List<dynamic> beerItems;
+late List<dynamic> foodItems;
+List<Map<String, dynamic>> checkout = [];
+double total = 0;
+final GlobalKey<_RightSideWidgetState> _checkoutKey =
+    GlobalKey<_RightSideWidgetState>();
+
+class DualStatefulPage extends StatefulWidget {
+  const DualStatefulPage({super.key});
+
+  @override
+  State<DualStatefulPage> createState() => _DualStatefulPageState();
+}
+
+class _DualStatefulPageState extends State<DualStatefulPage> {
+  void addToCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty) {
+        existingItem['quantity'] += 1;
+
+        total = total + (existingItem['price']);
+      } else {
+        checkout.add({...item, 'quantity': 1});
+        total = total + (item['price']);
+      }
+    });
+  }
+
+  void removeFromCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty && existingItem['quantity'] > 1) {
+        existingItem['quantity'] -= 1;
+        total = total - (existingItem['price']);
+      } else {
+        checkout.removeWhere((i) => i['id'] == item['id']);
+
+        total = total - (item['price']);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +75,7 @@ class DualStatefulPage extends StatelessWidget {
             flex: 2,
             child: Navigator(
               onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (context) => RightSideWidget(),
+                builder: (context) => RightSideWidget(key: _checkoutKey),
               ),
             ),
           ),
@@ -104,7 +150,7 @@ Widget _buildItemGrid({
         children: [
           if (icon != null)
             Icon(icon, size: 30, color: Colors.black54), // Show icon
-          Spacer(),
+          const Spacer(),
           Text(
             title,
             style: const TextStyle(
@@ -133,6 +179,7 @@ class LeftSideWidget extends StatefulWidget {
 }
 
 class _LeftSideWidgetState extends State<LeftSideWidget> {
+  //fetching of items
   Future<void> fetchCocktails() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('Pos_Items')
@@ -140,7 +187,61 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
         .collection('cocktail_items')
         .get();
     setState(() {
-      itemsFuture = snapshot.docs
+      cocktailItems = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc['name'],
+                'price': doc['price'],
+                'ingredients': doc['ingredients'],
+              })
+          .toList();
+    });
+  }
+
+  Future<void> fetchWines() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('wines')
+        .collection('wine_items')
+        .get();
+    setState(() {
+      wineItems = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc['name'],
+                'price': doc['price'],
+                'ingredients': doc['ingredients'],
+              })
+          .toList();
+    });
+  }
+
+  Future<void> fetchFood() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('food')
+        .collection('food_items')
+        .get();
+    setState(() {
+      foodItems = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc['name'],
+                'price': doc['price'],
+                'ingredients': doc['ingredients'],
+              })
+          .toList();
+    });
+  }
+
+  Future<void> fetchBeers() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('beers')
+        .collection('beer_items')
+        .get();
+    setState(() {
+      beerItems = snapshot.docs
           .map((doc) => {
                 'id': doc.id,
                 'name': doc['name'],
@@ -155,6 +256,9 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
   void initState() {
     super.initState();
     fetchCocktails();
+    fetchBeers();
+    fetchWines();
+    fetchFood();
   }
 
   @override
@@ -168,7 +272,25 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
         "onTap": () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Cocktails()),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Cocktails(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(0.0, 1.0); // Start from bottom
+                const end = Offset.zero;
+                const curve = Curves.fastOutSlowIn;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
           );
         }
       },
@@ -177,28 +299,120 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
         "subtitle": "",
         "color": "B0D9F5",
         "icon": Icons.local_bar,
-        "onTap": () => print("Cocktails tapped"),
+        "onTap": () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Cocktails(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(0.0, 1.0); // Start from bottom
+                const end = Offset.zero;
+                const curve = Curves.fastOutSlowIn;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
+        },
       },
       {
         "title": "Wines",
         "subtitle": "",
         "color": "A8E6CF",
         "icon": Icons.wine_bar,
-        "onTap": () => print("Wines tapped"),
+        "onTap": () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Wines(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(0.0, 1.0); // Start from bottom
+                const end = Offset.zero;
+                const curve = Curves.fastOutSlowIn;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
+        }
       },
       {
         "title": "Beers",
         "subtitle": "",
         "color": "F8E7A2",
         "icon": Icons.sports_bar,
-        "onTap": () => print("Beers tapped"),
+        "onTap": () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Beers(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(0.0, 1.0); // Start from bottom
+                const end = Offset.zero;
+                const curve = Curves.fastOutSlowIn;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
+        }
       },
       {
         "title": "Food",
         "subtitle": "",
         "color": "F8E7A2",
         "icon": Icons.fastfood,
-        "onTap": () => print("Food tapped"),
+        "onTap": () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Food(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(0.0, 1.0); // Start from bottom
+                const end = Offset.zero;
+                const curve = Curves.fastOutSlowIn;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
+        }
       },
     ];
     return Scaffold(
@@ -226,11 +440,47 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
 }
 
 class RightSideWidget extends StatefulWidget {
+  const RightSideWidget({Key? key}) : super(key: key);
+
   @override
   _RightSideWidgetState createState() => _RightSideWidgetState();
 }
 
 class _RightSideWidgetState extends State<RightSideWidget> {
+  void rebuildCheckout() {
+    setState(() {});
+  }
+
+  void addToCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty) {
+        existingItem['quantity'] += 1;
+
+        total = total + (existingItem['price']);
+      } else {
+        checkout.add({...item, 'quantity': 1});
+        total = total + (item['price']);
+      }
+    });
+  }
+
+  void removeFromCheckout(Map<String, dynamic> item) {
+    setState(() {
+      final existingItem =
+          checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+      if (existingItem.isNotEmpty && existingItem['quantity'] > 1) {
+        existingItem['quantity'] -= 1;
+        total = total - (existingItem['price']);
+      } else {
+        checkout.removeWhere((i) => i['id'] == item['id']);
+
+        total = total - (item['price']);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -272,7 +522,9 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                                   borderRadius: BorderRadius.circular(30),
                                 ))),
                             onPressed: () {
-                              setState(() {});
+                              setState(() {
+                                checkout.clear();
+                              });
                             },
                             child: const Text("Void"))
                       ],
@@ -308,10 +560,11 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                     child: SingleChildScrollView(
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: checkout.length,
                         itemBuilder: (context, index) {
+                          final item = checkout[index];
                           return ListTile(
-                            title: Text("Title"),
+                            title: Text(item['name']),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -320,20 +573,20 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                                     Icons.remove_circle_outline,
                                     color: Color(0xffFF6E1F),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () => removeFromCheckout(item),
                                 ),
-                                Text('quantity'),
+                                Text('${item['quantity']}'),
                                 IconButton(
                                   icon: const Icon(
                                     Icons.add_circle_outline,
                                     color: Color(0xffFF6E1F),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () => addToCheckout(item),
                                 ),
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                Text("Total")
+                                Text("\$${(item['price'] * item['quantity'])}")
                               ],
                             ),
                           );
@@ -400,6 +653,22 @@ class Cocktails extends StatefulWidget {
 class _CocktailsState extends State<Cocktails> {
   @override
   Widget build(BuildContext context) {
+    addToCheckout(Map<String, dynamic> item) {
+      setState(() {
+        final existingItem =
+            checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+        if (existingItem.isNotEmpty) {
+          existingItem['quantity'] += 1;
+          total = total + (existingItem['price']);
+        } else {
+          checkout.add({...item, 'quantity': 1});
+          total = total + (item['price']);
+        }
+      });
+
+      _checkoutKey.currentState?.rebuildCheckout();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -408,7 +677,7 @@ class _CocktailsState extends State<Cocktails> {
         elevation: 0,
         title: const Text(
           "Cocktails",
-          style: TextStyle(color: Colors.black), // Set text color to black
+          style: CheersStyles.posTitleStyle, // Set text color to black
         ),
       ),
       body: Padding(
@@ -417,13 +686,145 @@ class _CocktailsState extends State<Cocktails> {
           crossAxisCount: 4, // Two columns
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          itemCount: itemsFuture.length,
+          itemCount: cocktailItems.length,
           itemBuilder: (context, index) {
-            final item = itemsFuture[index];
+            final item = cocktailItems[index];
+            return _buildItemGrid(
+              onTap: () => addToCheckout(
+                  item), // Pass a reference, not call it immediately
+              title: item["name"],
+              subtitle: '\$${item['price']}',
+              color: const Color(0xffF19A6F),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Beers extends StatefulWidget {
+  const Beers({super.key});
+
+  @override
+  State<Beers> createState() => _BeersState();
+}
+
+class _BeersState extends State<Beers> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: const Text(
+          "Beers",
+          style: CheersStyles.posTitleStyle, // Set text color to black
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: MasonryGridView.count(
+          crossAxisCount: 4, // Two columns
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          itemCount: beerItems.length,
+          itemBuilder: (context, index) {
+            final item = beerItems[index];
             return _buildItemGrid(
               title: item["name"],
               subtitle: '\$${item['price']}',
-              color: Color(0xffF19A6F),
+              color: const Color(0xffF19A6F),
+
+              // Pass function
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Wines extends StatefulWidget {
+  const Wines({super.key});
+
+  @override
+  State<Wines> createState() => _WinesState();
+}
+
+class _WinesState extends State<Wines> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: const Text(
+          "Wines",
+          style: CheersStyles.posTitleStyle, // Set text color to black
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: MasonryGridView.count(
+          crossAxisCount: 4, // Two columns
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          itemCount: wineItems.length,
+          itemBuilder: (context, index) {
+            final item = wineItems[index];
+            return _buildItemGrid(
+              title: item["name"],
+              subtitle: '\$${item['price']}',
+              color: const Color(0xffF19A6F),
+
+              // Pass function
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Food extends StatefulWidget {
+  const Food({super.key});
+
+  @override
+  State<Food> createState() => _FoodState();
+}
+
+class _FoodState extends State<Food> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: const Text(
+          "Food",
+          style: CheersStyles.posTitleStyle, // Set text color to black
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: MasonryGridView.count(
+          crossAxisCount: 4, // Two columns
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          itemCount: foodItems.length,
+          itemBuilder: (context, index) {
+            final item = foodItems[index];
+            return _buildItemGrid(
+              title: item["name"],
+              subtitle: '\$${item['price']}',
+              color: const Color(0xffF19A6F),
 
               // Pass function
             );

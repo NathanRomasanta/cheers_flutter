@@ -24,7 +24,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF4F1EA),
+      backgroundColor: const Color(0xfffff6ea),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -44,7 +44,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
-                color: const Color(0xffF8F8F8),
+                color: const Color(0xffFfffff),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),

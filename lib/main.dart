@@ -22,7 +22,13 @@ class MyApp extends StatelessWidget {
     return FluentApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: FluentThemeData(fontFamily: 'Product Sans'),
+      theme: FluentThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Product Sans',
+        navigationPaneTheme: const NavigationPaneThemeData(
+          backgroundColor: Colors.white,
+        ),
+      ),
       home: const AuthGate(),
     );
   }
