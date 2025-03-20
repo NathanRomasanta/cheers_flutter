@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData(
-        scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Product Sans',
         navigationPaneTheme: const NavigationPaneThemeData(
           backgroundColor: Colors.white,

@@ -31,72 +31,62 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text(
-              "Payment Options",
-              style: CheersStyles.h1s,
+      body: Center(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 5, bottom: 20),
+              child: Text(
+                "Payment Method",
+                style: CheersStyles.paymentTitle,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 100,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                  height: 200,
-                  width: 200,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(const Color(0xffFF6E1F)),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Cash",
-                        style: CheersStyles.h3ss,
-                      ))),
-              Container(
-                  height: 200,
-                  width: 200,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(const Color(0xffFF6E1F)),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Card",
-                        style: CheersStyles.h3ss,
-                      ))),
-              Container(
-                  height: 200,
-                  width: 200,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(const Color(0xffFF6E1F)),
-                    ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CashPaymentButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text(
-                      "Fast Payment",
-                      style: CheersStyles.h3ss,
-                    ),
-                  )),
-            ],
-          ),
-        ],
+                    text: "Pay with Credit Card",
+                    icon: Icons.credit_card,
+                    lineColor: Colors.green,
+                    textStyle: CheersStyles.h3ss,
+                    backgroundColor: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
+                  CashPaymentButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: "Pay with Cash",
+                    icon: Icons.money,
+                    lineColor: Colors.green,
+                    textStyle: CheersStyles.h3ss,
+                    backgroundColor: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
+                  CashPaymentButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: "Fast Payment",
+                    icon: Icons.send_to_mobile,
+                    lineColor: Colors.green,
+                    textStyle: CheersStyles.h3ss,
+                    backgroundColor: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -23,17 +23,40 @@ class NavigatorGate extends StatefulWidget {
 
 class _NavigatorGateState extends State<NavigatorGate> {
   int currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
     return FluentApp(
         color: const Color(0xffffffff),
         theme: FluentThemeData(
+            mediumAnimationDuration: Durations.medium1,
+            animationCurve: Curves.bounceIn,
             scaffoldBackgroundColor: CupertinoColors.systemBackground,
             navigationPaneTheme: const NavigationPaneThemeData(
               backgroundColor: CupertinoColors.systemBackground,
             ),
             accentColor: material.Colors.orange.toAccentColor()),
         home: NavigationView(
+          // Longer duration
+          transitionBuilder: (child, animation) {
+            // Combined fade and slide animation
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeIn,
+              ),
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(0.0, 0.2), // Slide up from slightly below
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutQuad,
+                )),
+                child: child,
+              ),
+            );
+          },
           pane: NavigationPane(
               displayMode: PaneDisplayMode.open,
               toggleable: true,
@@ -110,7 +133,7 @@ class _NavigatorGateState extends State<NavigatorGate> {
                       size: 25,
                     ),
                     title: const Text("Orders"),
-                    body: POSPage()),
+                    body: PaymentScreen()),
                 PaneItem(
                     icon: const Icon(
                       Icons.send,
@@ -119,6 +142,14 @@ class _NavigatorGateState extends State<NavigatorGate> {
                     ),
                     title: const Text("Orders"),
                     body: OrderList()),
+                PaneItem(
+                    icon: const Icon(
+                      Icons.send,
+                      color: Color(0xffFF6E1F),
+                      size: 25,
+                    ),
+                    title: const Text("Orders"),
+                    body: POSPage()),
               ],
               selected: currentPage,
               onChanged: (index) => setState(() {

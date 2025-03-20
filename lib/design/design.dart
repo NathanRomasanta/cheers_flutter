@@ -52,6 +52,19 @@ class CheersStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle menuTitle = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 25,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle paymentTitle = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 18,
+    color: Colors.black,
+  );
+
   static const TextStyle posTitleStyle = TextStyle(
     fontFamily: 'Product Sans',
     fontSize: 24,
@@ -108,4 +121,104 @@ class CheersStyles {
     fontSize: 15,
     color: Colors.black,
   );
+}
+
+class CashPaymentButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Color lineColor;
+  final Color backgroundColor;
+  final Color iconColor;
+  final TextStyle textStyle;
+  final String text;
+  final IconData icon;
+  final double height;
+  final double width;
+  final double elevation;
+  final Color shadowColor;
+  final double lineWidth;
+  final Color dividerColor;
+  final double dividerThickness;
+  final double dividerHeight;
+  final double? lineHeight; // New parameter for customizing the line height
+
+  const CashPaymentButton({
+    Key? key,
+    required this.onPressed,
+    this.lineColor = Colors.blue,
+    this.backgroundColor = Colors.white,
+    this.iconColor = Colors.black,
+    this.textStyle = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    this.text = "Pay with Cash",
+    this.icon = Icons.payments,
+    this.height = 90,
+    this.width = 300,
+    this.elevation = 5,
+    this.shadowColor = Colors.grey,
+    this.lineWidth = 3,
+    this.dividerColor = Colors.grey,
+    this.dividerThickness = 1,
+    this.dividerHeight = 40,
+    this.lineHeight, // Optional: If null, it will extend to the full height of the button
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      width: width,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.zero, // Remove default padding
+          backgroundColor: backgroundColor,
+          elevation: elevation,
+          shadowColor: shadowColor,
+        ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // The line that can be customized to full height or specific height
+            Container(
+              width: lineWidth,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: lineColor,
+                borderRadius: const BorderRadiusDirectional.only(
+                    topStart: Radius.circular(100),
+                    bottomStart: Radius.circular(100)),
+              ),
+            ),
+            // The content with icon, divider and text
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: lineWidth + 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    icon,
+                    color: iconColor,
+                    size: 24,
+                  ),
+                  SizedBox(width: 15),
+                  Container(
+                    height: dividerHeight,
+                    width: dividerThickness,
+                    color: dividerColor,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    text,
+                    style: textStyle,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
