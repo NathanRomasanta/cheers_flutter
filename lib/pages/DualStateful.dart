@@ -653,6 +653,12 @@ class _RightSideWidgetState extends State<RightSideWidget> {
         .doc(user.email)
         .collection(currentDateString);
 
+    DocumentReference datesDocRef = _db
+        .collection('transactions')
+        .doc(user.email)
+        .collection('dates')
+        .doc(currentDateString);
+
     // Get the count of documents in this collection
     QuerySnapshot transactionDocs = await transactionsCollection.get();
     int docCount =
@@ -687,8 +693,22 @@ class _RightSideWidgetState extends State<RightSideWidget> {
         'total': total,
         'items': checkout,
         'totalItems': totalItems,
-        'isVoided': false
+        'isVoided': false,
+        'id': documentID
       });
+
+      DocumentSnapshot dateDoc = await datesDocRef.get();
+      // If the date document doesn't exist, create it
+      if (!dateDoc.exists) {
+        await datesDocRef.set({
+          'date': currentDateString,
+          'timestamp': Timestamp.now(),
+          'transactionCount': 1
+        });
+      } else {
+        // If it exists, update the transaction count
+        await datesDocRef.update({'transactionCount': FieldValue.increment(1)});
+      }
 
       Fluttertoast.showToast(
           msg: 'Transaction Done', gravity: ToastGravity.TOP);

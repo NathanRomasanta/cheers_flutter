@@ -67,7 +67,22 @@ class CheersStyles {
 
   static const TextStyle posTitleStyle = TextStyle(
     fontFamily: 'Product Sans',
-    fontSize: 24,
+    fontSize: 22,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle tableHeaders = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 14,
+  );
+
+  static const TextStyle tableItems =
+      TextStyle(fontFamily: 'Product Sans', fontSize: 14, color: Colors.grey);
+
+  static const TextStyle pageTitle = TextStyle(
+    fontFamily: 'Product Sans',
+    fontSize: 23,
     color: Colors.black,
     fontWeight: FontWeight.w700,
   );
