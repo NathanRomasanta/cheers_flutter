@@ -352,7 +352,7 @@ class _ItemAccountsState extends State<ItemAccounts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF4F1EA),
+      backgroundColor: const Color(0xfffff6ea),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

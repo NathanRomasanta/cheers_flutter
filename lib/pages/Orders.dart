@@ -153,7 +153,7 @@ class _StockOrderState extends State<StockOrder> {
 
     int crossAxisCount = screenWidth < 600 ? 2 : (screenWidth < 900 ? 3 : 5);
     return Scaffold(
-        backgroundColor: const Color(0xffF4F1EA),
+        backgroundColor: const Color(0xfffff6ea),
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

@@ -80,7 +80,7 @@ class _SettingsState extends State<Settings> {
 
   Scaffold settingsPage(DocumentSnapshot snapshot) {
     return Scaffold(
-        backgroundColor: const Color(0xffF4F1EA),
+        backgroundColor: const Color(0xfffff6ea),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -93,7 +93,7 @@ class _SettingsState extends State<Settings> {
               ),
               SizedBox(
                 width: 500,
-                height: 600,
+                height: 500,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,

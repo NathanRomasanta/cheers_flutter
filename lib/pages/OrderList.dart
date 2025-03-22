@@ -140,6 +140,7 @@ class _OrderListState extends State<OrderList> {
                                       ),
                                     );
                                   }
+                                  return null;
                                 });
                           } else {
                             return const Text("No Stock");

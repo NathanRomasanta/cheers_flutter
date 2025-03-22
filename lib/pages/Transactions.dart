@@ -13,7 +13,6 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<String> dropdownItems = [];
   String? selectedValue;
   final user = FirebaseAuth.instance.currentUser!;

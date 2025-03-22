@@ -641,12 +641,6 @@ class _RightSideWidgetState extends State<RightSideWidget> {
             ? startOfDay
             : startOfDay.subtract(Duration(days: 1)));
 
-    CollectionReference<Map<String, dynamic>> stockCollection =
-        FirebaseFirestore.instance
-            .collection('Accounts')
-            .doc(user.email)
-            .collection('stock');
-
     // Reference to the transactions collection using the date
     CollectionReference transactionsCollection = _db
         .collection('transactions')
@@ -671,11 +665,6 @@ class _RightSideWidgetState extends State<RightSideWidget> {
     String documentID = '$baseDatePart-$docNumberFormatted';
 
     int? totalItems = 0;
-    final snapshot = await stockCollection.get();
-
-    final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
-      return doc.data();
-    }).toList();
 
     for (var items in checkout) {
       print(items['ingredients']);

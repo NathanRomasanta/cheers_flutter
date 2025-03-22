@@ -18,7 +18,6 @@ class POSPage extends StatefulWidget {
 
 class _POSPageState extends State<POSPage> {
   List<Map<String, dynamic>> checkout = [];
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser!;
   String title = "";
   late Future<List<dynamic>> itemsFuture;
@@ -315,22 +314,12 @@ class _POSPageState extends State<POSPage> {
           .format(startOfDay.add(Duration(days: 1))); // Next day's date
     }
 
-    CollectionReference<Map<String, dynamic>> stockCollection =
-        FirebaseFirestore.instance
-            .collection('Accounts')
-            .doc(user.email)
-            .collection('stock');
     CollectionReference transactions = _db
         .collection('baristas')
         .doc(user.email)
         .collection(currentDateString);
 
     int? totalItems = 0;
-    final snapshot = await stockCollection.get();
-
-    final List<Map<String, dynamic>> stockList = snapshot.docs.map((doc) {
-      return doc.data();
-    }).toList();
 
     for (var items in checkout) {
       print(items['ingredients']);
