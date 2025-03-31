@@ -180,6 +180,8 @@ Widget _buildItemGrid({
 }
 
 class LeftSideWidget extends StatefulWidget {
+  const LeftSideWidget({super.key});
+
   @override
   _LeftSideWidgetState createState() => _LeftSideWidgetState();
 }
@@ -615,7 +617,7 @@ class _RightSideWidgetState extends State<RightSideWidget> {
   }
 
   void addToTransactions() async {
-    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final FirebaseFirestore db = FirebaseFirestore.instance;
     DateTime now = DateTime.now();
     String currentDateString = "";
 
@@ -623,7 +625,7 @@ class _RightSideWidgetState extends State<RightSideWidget> {
     DateTime startOfDay =
         DateTime(now.year, now.month, now.day, 9); // 9 AM today
     DateTime endOfDay =
-        startOfDay.add(Duration(hours: 19)); // 4 AM the next day
+        startOfDay.add(const Duration(hours: 19)); // 4 AM the next day
 
     // If the current time is after 9 AM but before 4 AM, use the current day
     // If the current time is between 4 AM and 9 AM, use the previous day
@@ -632,22 +634,22 @@ class _RightSideWidgetState extends State<RightSideWidget> {
           DateFormat('MMMM-dd-yyyy').format(startOfDay); // Today's date
     } else if (now.isAfter(endOfDay) || now.isBefore(startOfDay)) {
       currentDateString = DateFormat('MMMM-dd-yyyy').format(
-          startOfDay.subtract(Duration(days: 1))); // Previous day's date
+          startOfDay.subtract(const Duration(days: 1))); // Previous day's date
     }
 
     // Get base date part (without yyyy)
     String baseDatePart = DateFormat('MMMM-dd').format(
         now.isAfter(startOfDay) && now.isBefore(endOfDay)
             ? startOfDay
-            : startOfDay.subtract(Duration(days: 1)));
+            : startOfDay.subtract(const Duration(days: 1)));
 
     // Reference to the transactions collection using the date
-    CollectionReference transactionsCollection = _db
+    CollectionReference transactionsCollection = db
         .collection('transactions')
         .doc(user.email)
         .collection(currentDateString);
 
-    DocumentReference datesDocRef = _db
+    DocumentReference datesDocRef = db
         .collection('transactions')
         .doc(user.email)
         .collection('dates')
@@ -868,7 +870,7 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                           return ListTile(
                             title: Text(
                               item['name'],
-                              style: TextStyle(fontSize: 15),
+                              style: const TextStyle(fontSize: 15),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -882,7 +884,7 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                                 ),
                                 Text(
                                   '${item['quantity']}',
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -896,7 +898,7 @@ class _RightSideWidgetState extends State<RightSideWidget> {
                                 ),
                                 Text(
                                   "\$${(item['price'] * item['quantity'])}",
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),

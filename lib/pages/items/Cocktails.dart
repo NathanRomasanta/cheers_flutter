@@ -18,7 +18,7 @@ class _CocktailsPageState extends State<CocktailsPage> {
             },
             child: const Text("Back"))
       ]),
-      body: Text("Cocktails"),
+      body: const Text("Cocktails"),
     );
   }
 }

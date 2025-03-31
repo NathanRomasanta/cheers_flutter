@@ -14,7 +14,7 @@ class _AdminHomeState extends State<AdminHome> {
       body: Center(
         child: Column(children: [
           const Text("Admin Home"),
-          ElevatedButton(onPressed: () {}, child: Text(""))
+          ElevatedButton(onPressed: () {}, child: const Text(""))
         ]),
       ),
     );

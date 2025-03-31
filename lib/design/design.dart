@@ -96,7 +96,7 @@ class CheersStyles {
 
   static const TextStyle alertTextButton = TextStyle(
     fontFamily: 'Product Sans',
-    color: const Color(0xffFF6E1F),
+    color: Color(0xffFF6E1F),
     fontWeight: FontWeight.w700,
   );
 
@@ -126,7 +126,7 @@ class CheersStyles {
   );
   static const TextStyle h2s = TextStyle(
     fontFamily: 'Product Sans',
-    fontSize: 20,
+    fontSize: 18,
     color: Colors.grey,
     fontWeight: FontWeight.w700,
   );
@@ -217,13 +217,13 @@ class CashPaymentButton extends StatelessWidget {
                     color: iconColor,
                     size: 24,
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   Container(
                     height: dividerHeight,
                     width: dividerThickness,
                     color: dividerColor,
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   Text(
                     text,
                     style: textStyle,

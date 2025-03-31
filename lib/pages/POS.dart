@@ -293,7 +293,7 @@ class _POSPageState extends State<POSPage> {
   }
 
   void _addToTransactions() async {
-    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final FirebaseFirestore db = FirebaseFirestore.instance;
     DateTime now = DateTime.now();
 
     String currentDateString = "";
@@ -302,7 +302,7 @@ class _POSPageState extends State<POSPage> {
     DateTime startOfDay =
         DateTime(now.year, now.month, now.day, 9); // 9 AM today
     DateTime endOfDay =
-        startOfDay.add(Duration(hours: 19)); // 4 AM the next day
+        startOfDay.add(const Duration(hours: 19)); // 4 AM the next day
 
     // If the current time is after 9 AM but before 4 AM, use the current day (March 12)
     // If the current time is between 4 AM and 9 AM, use the previous day (March 11)
@@ -311,13 +311,11 @@ class _POSPageState extends State<POSPage> {
           DateFormat('MMMM-dd-yyyy').format(startOfDay); // Today's date
     } else if (now.isAfter(endOfDay) || now.isBefore(startOfDay)) {
       currentDateString = DateFormat('MMMM-dd-yyyy')
-          .format(startOfDay.add(Duration(days: 1))); // Next day's date
+          .format(startOfDay.add(const Duration(days: 1))); // Next day's date
     }
 
-    CollectionReference transactions = _db
-        .collection('baristas')
-        .doc(user.email)
-        .collection(currentDateString);
+    CollectionReference transactions =
+        db.collection('baristas').doc(user.email).collection(currentDateString);
 
     int? totalItems = 0;
 
@@ -416,12 +414,11 @@ class _POSPageState extends State<POSPage> {
                 child: ElevatedButton(
                     style: ButtonStyle(
                         minimumSize:
-                            MaterialStateProperty.all(const Size(120, 50)),
+                            WidgetStateProperty.all(const Size(120, 50)),
                         backgroundColor:
-                            MaterialStateProperty.all(const Color(0xffFF6E1F)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
+                            WidgetStateProperty.all(const Color(0xffFF6E1F)),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ))),
                     onPressed: () {},
@@ -462,12 +459,12 @@ class _POSPageState extends State<POSPage> {
                               children: [
                                 ElevatedButton(
                                     style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(
+                                        minimumSize: WidgetStateProperty.all(
                                             const Size(150, 50)),
                                         backgroundColor:
-                                            MaterialStateProperty.all(
+                                            WidgetStateProperty.all(
                                                 const Color(0xffF0886F)),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -482,12 +479,12 @@ class _POSPageState extends State<POSPage> {
                                     child: const Text("Favorites")),
                                 ElevatedButton(
                                     style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(
+                                        minimumSize: WidgetStateProperty.all(
                                             const Size(150, 50)),
                                         backgroundColor:
-                                            MaterialStateProperty.all(
+                                            WidgetStateProperty.all(
                                                 const Color(0xffF0886F)),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -502,12 +499,12 @@ class _POSPageState extends State<POSPage> {
                                     child: const Text("Cocktails")),
                                 ElevatedButton(
                                     style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(
+                                        minimumSize: WidgetStateProperty.all(
                                             const Size(150, 50)),
                                         backgroundColor:
-                                            MaterialStateProperty.all(
+                                            WidgetStateProperty.all(
                                                 const Color(0xffF0886F)),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -522,12 +519,12 @@ class _POSPageState extends State<POSPage> {
                                     child: const Text("Wines")),
                                 ElevatedButton(
                                     style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(
+                                        minimumSize: WidgetStateProperty.all(
                                             const Size(150, 50)),
                                         backgroundColor:
-                                            MaterialStateProperty.all(
+                                            WidgetStateProperty.all(
                                                 const Color(0xffF0886F)),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -542,12 +539,12 @@ class _POSPageState extends State<POSPage> {
                                     child: const Text("Beers")),
                                 ElevatedButton(
                                     style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(
+                                        minimumSize: WidgetStateProperty.all(
                                             const Size(150, 50)),
                                         backgroundColor:
-                                            MaterialStateProperty.all(
+                                            WidgetStateProperty.all(
                                                 const Color(0xffF0886F)),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                           borderRadius:
@@ -715,24 +712,25 @@ class _POSPageState extends State<POSPage> {
                                     ),
                                     ElevatedButton(
                                         style: ButtonStyle(
-                                            textStyle: MaterialStateProperty.all(
+                                            textStyle: WidgetStateProperty.all(
                                                 const TextStyle(
                                                     fontFamily:
                                                         "Product Sans")),
-                                            minimumSize: MaterialStateProperty.all(
+                                            minimumSize: WidgetStateProperty.all(
                                                 const Size(40, 40)),
                                             foregroundColor:
-                                                MaterialStateProperty.all(
+                                                WidgetStateProperty.all(
                                                     Colors.white),
-                                            padding: MaterialStateProperty.all(
+                                            padding: WidgetStateProperty.all(
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 32,
                                                     vertical: 16)),
                                             backgroundColor:
-                                                MaterialStateProperty.all(
+                                                WidgetStateProperty.all(
                                                     const Color(0xffFF6E1F)),
-                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
+                                            shape:
+                                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(30),
                                             ))),

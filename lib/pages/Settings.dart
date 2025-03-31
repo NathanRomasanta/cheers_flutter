@@ -18,6 +18,7 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Confirm Logout'),
           content: const Text('Are you sure you want to log out?'),
           actions: [
@@ -32,9 +33,10 @@ class _SettingsState extends State<Settings> {
             ),
             ElevatedButton(
               style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(100, 40)),
-                  backgroundColor: MaterialStateProperty.all(Color(0xffFF6E1F)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  minimumSize: WidgetStateProperty.all(const Size(100, 40)),
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xffFF6E1F)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ))),
@@ -44,7 +46,10 @@ class _SettingsState extends State<Settings> {
                 Navigator.of(context).pop(); // Close the dialog
                 // Call the logout method
               },
-              child: const Text('Logout'),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -80,16 +85,16 @@ class _SettingsState extends State<Settings> {
 
   Scaffold settingsPage(DocumentSnapshot snapshot) {
     return Scaffold(
-        backgroundColor: const Color(0xfffff6ea),
+        backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(28.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 "Settings",
-                style: CheersStyles.h1s,
+                style: CheersStyles.pageTitle,
               ),
               SizedBox(
                 width: 500,
@@ -100,7 +105,7 @@ class _SettingsState extends State<Settings> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
                       const Text(
                         "Account",
@@ -114,7 +119,7 @@ class _SettingsState extends State<Settings> {
                         ),
                         title: Text(
                           snapshot['firstName'] + " " + snapshot['lastName'],
-                          style: TextStyle(fontFamily: 'Product Sans'),
+                          style: const TextStyle(fontFamily: 'Product Sans'),
                         ),
                       ),
                       ListTile(
@@ -128,9 +133,26 @@ class _SettingsState extends State<Settings> {
                           style: const TextStyle(fontFamily: 'Product Sans'),
                         ),
                       ),
+                      ListTile(
+                        subtitle: const Text("Change your password"),
+                        leading: const Icon(
+                          Icons.lock,
+                          size: 35,
+                        ),
+                        title: const Text(
+                          "Password",
+                          style: TextStyle(fontFamily: 'Product Sans'),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       const Text(
-                        "Settings",
+                        "Preferences",
                         style: CheersStyles.h2s,
                       ),
                       ListTile(

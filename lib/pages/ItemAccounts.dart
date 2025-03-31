@@ -373,7 +373,30 @@ class _ItemAccountsState extends State<ItemAccounts> {
               leading: const Icon(Icons.email_rounded, size: 35),
               trailing: IconButton(
                   icon: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: _showOpeningAccountsDialog),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const TextFields(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(0.0, 1.0); // Start from bottom
+                          const end = Offset.zero;
+                          const curve = Curves.fastOutSlowIn;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  }),
             ),
             const Text("Closing Accounts", style: CheersStyles.h2s),
             ListTile(
@@ -385,6 +408,31 @@ class _ItemAccountsState extends State<ItemAccounts> {
                   onPressed: _showClosingAccountsDialog),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class TextFields extends StatefulWidget {
+  const TextFields({super.key});
+
+  @override
+  State<TextFields> createState() => _TextFieldsState();
+}
+
+class _TextFieldsState extends State<TextFields> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: const Text(
+          "Opening Accounts",
+          style: CheersStyles.posTitleStyle, // Set text color to black
         ),
       ),
     );

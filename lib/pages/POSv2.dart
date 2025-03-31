@@ -13,7 +13,7 @@ class POSv2 extends StatefulWidget {
 class _POSv2State extends State<POSv2> {
   navigateToCocktails() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => CocktailsPage()));
+        .push(MaterialPageRoute(builder: (context) => const CocktailsPage()));
   }
 
   @override
@@ -24,7 +24,7 @@ class _POSv2State extends State<POSv2> {
         child: Row(
           children: [
             // Left section (3/5 of the screen)
-            Expanded(flex: 3, child: MenuPart()),
+            const Expanded(flex: 3, child: MenuPart()),
 
             // Divider
             Container(
@@ -121,19 +121,19 @@ class _CheckoutPartState extends State<CheckoutPart> {
                         ),
                         ElevatedButton(
                             style: ButtonStyle(
-                                textStyle: MaterialStateProperty.all(
+                                textStyle: WidgetStateProperty.all(
                                     const TextStyle(
                                         fontFamily: "Product Sans")),
-                                minimumSize: MaterialStateProperty.all(
-                                    const Size(40, 40)),
+                                minimumSize:
+                                    WidgetStateProperty.all(const Size(40, 40)),
                                 foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                padding: MaterialStateProperty.all(
+                                    WidgetStateProperty.all(Colors.white),
+                                padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(
                                         horizontal: 32, vertical: 16)),
-                                backgroundColor: MaterialStateProperty.all(
+                                backgroundColor: WidgetStateProperty.all(
                                     const Color(0xffFF6E1F)),
-                                shape: MaterialStateProperty.all<
+                                shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -178,7 +178,7 @@ class _CheckoutPartState extends State<CheckoutPart> {
                         itemCount: 5,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text("Title"),
+                            title: const Text("Title"),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -189,7 +189,7 @@ class _CheckoutPartState extends State<CheckoutPart> {
                                   ),
                                   onPressed: () {},
                                 ),
-                                Text('quantity'),
+                                const Text('quantity'),
                                 IconButton(
                                   icon: const Icon(
                                     Icons.add_circle_outline,
@@ -200,7 +200,7 @@ class _CheckoutPartState extends State<CheckoutPart> {
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                Text("Total")
+                                const Text("Total")
                               ],
                             ),
                           );
@@ -281,9 +281,9 @@ class _MenuPartState extends State<MenuPart> {
           showModalBottomSheet(
               context: context,
               builder: ((context) {
-                return Container(
+                return SizedBox(
                   height: 200,
-                  child: Text("Modal"),
+                  child: const Text("Modal"),
                 );
               }));
         }
