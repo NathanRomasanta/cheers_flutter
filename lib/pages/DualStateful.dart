@@ -13,6 +13,7 @@ late List<dynamic> cocktailItems;
 late List<dynamic> wineItems;
 late List<dynamic> beerItems;
 late List<dynamic> foodItems;
+late List<dynamic> favoriteItems;
 List<Map<String, dynamic>> checkout = [];
 final user = FirebaseAuth.instance.currentUser!;
 double total = 0;
@@ -188,6 +189,25 @@ class LeftSideWidget extends StatefulWidget {
 
 class _LeftSideWidgetState extends State<LeftSideWidget> {
   //fetching of items
+
+  Future<void> fetchFavorites() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Accounts')
+        .doc(user.email)
+        .collection('Favorites')
+        .get();
+    setState(() {
+      favoriteItems = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc['name'],
+                'price': doc['price'],
+                'ingredients': doc['ingredients'],
+              })
+          .toList();
+    });
+  }
+
   Future<void> fetchCocktails() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('Pos_Items')
@@ -267,6 +287,7 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
     fetchBeers();
     fetchWines();
     fetchFood();
+    fetchFavorites();
   }
 
   @override
@@ -282,7 +303,7 @@ class _LeftSideWidgetState extends State<LeftSideWidget> {
             context,
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  const Cocktails(),
+                  const Favorites(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 const begin = Offset(0.0, 1.0); // Start from bottom
@@ -1186,6 +1207,67 @@ class _FoodState extends State<Food> {
           itemCount: foodItems.length,
           itemBuilder: (context, index) {
             final item = foodItems[index];
+            return _buildItemGrid(
+              onTap: () => addToCheckout(item),
+              title: item["name"],
+              subtitle: '\$${item['price']}',
+              color: const Color(0xffF19A6F),
+
+              // Pass function
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Favorites extends StatefulWidget {
+  const Favorites({super.key});
+
+  @override
+  State<Favorites> createState() => _FavoritesState();
+}
+
+class _FavoritesState extends State<Favorites> {
+  @override
+  Widget build(BuildContext context) {
+    addToCheckout(Map<String, dynamic> item) {
+      setState(() {
+        final existingItem =
+            checkout.firstWhere((i) => i['id'] == item['id'], orElse: () => {});
+        if (existingItem.isNotEmpty) {
+          existingItem['quantity'] += 1;
+          total = total + (existingItem['price']);
+        } else {
+          checkout.add({...item, 'quantity': 1});
+          total = total + (item['price']);
+        }
+      });
+
+      _checkoutKey.currentState?.rebuildCheckout();
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: const Text(
+          "Favorites",
+          style: CheersStyles.posTitleStyle, // Set text color to black
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: MasonryGridView.count(
+          crossAxisCount: 4, // Two columns
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          itemCount: favoriteItems.length,
+          itemBuilder: (context, index) {
+            final item = favoriteItems[index];
             return _buildItemGrid(
               onTap: () => addToCheckout(item),
               title: item["name"],

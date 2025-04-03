@@ -169,7 +169,32 @@ class _SettingsState extends State<Settings> {
                           icon: const Icon(
                             Icons.arrow_forward_ios_rounded,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        const Favorites(),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin =
+                                      Offset(0.0, 1.0); // Start from bottom
+                                  const end = Offset.zero;
+                                  const curve = Curves.fastOutSlowIn;
+
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+
+                                  return SlideTransition(
+                                    position: offsetAnimation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 70),
@@ -187,5 +212,111 @@ class _SettingsState extends State<Settings> {
             ],
           ),
         ));
+  }
+}
+
+class Favorites extends StatefulWidget {
+  const Favorites({super.key});
+
+  @override
+  State<Favorites> createState() => _FavoritesState();
+}
+
+class _FavoritesState extends State<Favorites> {
+  List<dynamic> _items = [];
+  List<dynamic> _selectedItems = [];
+  bool _isExpanded = false;
+  final user = FirebaseAuth.instance.currentUser!;
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Pos_Items')
+        .doc('cocktails')
+        .collection('cocktail_items')
+        .get();
+    setState(() {
+      _items = snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc['name'],
+                'price': doc['price'],
+                'ingredients': doc['ingredients'],
+              })
+          .toList();
+    });
+
+    print(_items);
+  }
+
+  void _toggleSelection(Map<String, dynamic> item) {
+    setState(() {
+      if (_selectedItems
+          .any((selectedItem) => selectedItem['id'] == item['id'])) {
+        _selectedItems
+            .removeWhere((selectedItem) => selectedItem['id'] == item['id']);
+      } else {
+        _selectedItems.add(item);
+      }
+    });
+  }
+
+  Future<void> _saveSelectedItems() async {
+    CollectionReference targetCollection = FirebaseFirestore.instance
+        .collection('Accounts')
+        .doc(user.email)
+        .collection("Favorites");
+    for (var item in _selectedItems) {
+      await targetCollection.add({
+        'id': item['id'],
+        'name': item['name'],
+        'price': item['price'].toString(),
+        'ingredients': item['ingredients'],
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text("Change Favorites"),
+            Expanded(
+              child: SingleChildScrollView(
+                child: ExpansionTile(
+                  title: const Text('Select Items'),
+                  initiallyExpanded: _isExpanded,
+                  onExpansionChanged: (expanded) {
+                    setState(() => _isExpanded = expanded);
+                  },
+                  children: _items.map((item) {
+                    return CheckboxListTile(
+                      title: Text(item['name'] ?? 'Unnamed Item'),
+                      value: _selectedItems.any(
+                          (selectedItem) => selectedItem['id'] == item['id']),
+                      onChanged: (_) => _toggleSelection(item),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _selectedItems.isEmpty ? null : _saveSelectedItems,
+              child: Text('Save Selected Items'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

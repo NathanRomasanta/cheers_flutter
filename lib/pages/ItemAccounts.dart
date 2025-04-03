@@ -119,11 +119,7 @@ class _ItemAccountsState extends State<ItemAccounts> {
       _controllers6.forEach((key, controller) => controller.clear());
       // ignore: use_build_context_synchronously
       Navigator.of(context, rootNavigator: true).pop(); // Close only the dialog
-      Fluttertoast.showToast(
-          msg: 'Opening accounts set successfully', gravity: ToastGravity.TOP);
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'Error: $e', gravity: ToastGravity.TOP);
-    }
+    } catch (e) {}
   }
 
   Future<void> _setClosingAccounts() async {
@@ -157,10 +153,8 @@ class _ItemAccountsState extends State<ItemAccounts> {
       _controllers6.forEach((key, controller) => controller.clear());
       // ignore: use_build_context_synchronously
       Navigator.of(context, rootNavigator: true).pop(); // Close only the dialog
-      Fluttertoast.showToast(
-          msg: 'Opening accounts set successfully', gravity: ToastGravity.TOP);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Error: $e', gravity: ToastGravity.TOP);
+      print(e);
     }
   }
 

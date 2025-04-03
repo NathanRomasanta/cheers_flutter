@@ -2,6 +2,7 @@ import 'package:cheers_flutter/pages/DualStateful.dart';
 import 'package:cheers_flutter/pages/ItemAccounts.dart';
 import 'package:cheers_flutter/pages/Settings.dart';
 import 'package:cheers_flutter/pages/Orders.dart';
+import 'package:cheers_flutter/pages/SquareTest.dart';
 import 'package:cheers_flutter/pages/Stocks.dart';
 import 'package:cheers_flutter/pages/Transactions.dart';
 import 'package:fluent_ui/fluent_ui.dart';

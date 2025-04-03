@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class AdminCreation extends StatefulWidget {
   const AdminCreation({super.key});
@@ -61,8 +60,6 @@ class _AdminCreationState extends State<AdminCreation> {
         },
       );
     } on FirebaseAuthException catch (e) {
-      Fluttertoast.showToast(
-          msg: e.message.toString(), gravity: ToastGravity.TOP);
       Navigator.of(context).pop();
     }
   }

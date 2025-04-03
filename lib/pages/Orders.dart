@@ -153,215 +153,203 @@ class _StockOrderState extends State<StockOrder> {
 
     int crossAxisCount = screenWidth < 600 ? 2 : (screenWidth < 900 ? 3 : 5);
     return Scaffold(
-        backgroundColor: const Color(0xfffff6ea),
         body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Order Stock",
-                      style: CheersStyles.h1s,
-                    ),
-                  ],
+                Text(
+                  "Order Stock",
+                  style: CheersStyles.h1s,
                 ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ],
+            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Current Barista:",
-                            style: CheersStyles.h7s,
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Text(user.email.toString(), style: CheersStyles.h7s),
-                        ],
+                      const Text(
+                        "Current Barista:",
+                        style: CheersStyles.h7s,
                       ),
                       const SizedBox(
-                        height: 10,
+                        width: 15,
                       ),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              style: CheersStyles.buttonMain,
-                              onPressed: () {
-                                _submitOrder();
-                              },
-                              child: const Text("Submit Order")),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: const Color(0xffF8F8F8),
-                            ),
-                            child: SizedBox(
-                              height: 500,
-                              width: 400,
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Order Slip',
-                                      style: CheersStyles.h3ss,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                      height: 400,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        // Prevents nested scrolling issues
-                                        itemCount: selectedIngredients.length,
-                                        itemBuilder: (context, index) {
-                                          var ingredient =
-                                              selectedIngredients[index];
-                                          return Container(
-                                            decoration: const BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                  color: Color.fromARGB(
-                                                      255,
-                                                      221,
-                                                      221,
-                                                      221), // Underline color
-                                                  width:
-                                                      1.0, // Underline thickness
-                                                ),
-                                              ),
-                                            ),
-                                            child: ListTile(
-                                              title: Row(
-                                                children: [
-                                                  Text('${ingredient['name']}'),
-                                                  const SizedBox(width: 15),
-                                                  SizedBox(
-                                                      width: 100,
-                                                      child: TextField(
-                                                        decoration:
-                                                            const InputDecoration(
-                                                                labelText:
-                                                                    'Quantity'),
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        inputFormatters: <TextInputFormatter>[
-                                                          FilteringTextInputFormatter
-                                                              .digitsOnly
-                                                        ],
-                                                        onChanged: (value) {
-                                                          _updateQuantity(
-                                                              ingredient['id'],
-                                                              int.tryParse(
-                                                                      value) ??
-                                                                  0);
-                                                        },
-                                                      ))
-                                                ],
-                                              ),
-                                              trailing: IconButton(
-                                                icon: const Icon(Icons.delete),
-                                                onPressed: () {
-                                                  deleteItem(index);
-                                                },
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                      Text(user.email.toString(), style: CheersStyles.h7s),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                          style: CheersStyles.buttonMain,
+                          onPressed: () {
+                            _submitOrder();
+                          },
+                          child: const Text("Submit Order")),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: const Color(0xffF8F8F8),
+                        ),
+                        child: SizedBox(
+                          height: 500,
+                          width: 400,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Order Slip',
+                                  style: CheersStyles.h3ss,
                                 ),
-                              ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  height: 400,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    // Prevents nested scrolling issues
+                                    itemCount: selectedIngredients.length,
+                                    itemBuilder: (context, index) {
+                                      var ingredient =
+                                          selectedIngredients[index];
+                                      return Container(
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Color.fromARGB(255, 221,
+                                                  221, 221), // Underline color
+                                              width: 1.0, // Underline thickness
+                                            ),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Row(
+                                            children: [
+                                              Text('${ingredient['name']}'),
+                                              const SizedBox(width: 15),
+                                              SizedBox(
+                                                  width: 100,
+                                                  child: TextField(
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                                'Quantity'),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    inputFormatters: <TextInputFormatter>[
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly
+                                                    ],
+                                                    onChanged: (value) {
+                                                      _updateQuantity(
+                                                          ingredient['id'],
+                                                          int.tryParse(value) ??
+                                                              0);
+                                                    },
+                                                  ))
+                                            ],
+                                          ),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () {
+                                              deleteItem(index);
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: const Color(0xffF8F8F8),
-                            ),
-                            child: SizedBox(
-                              height: 500,
-                              width: 700,
-                              child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Inventory Options',
-                                        style: CheersStyles.h3ss,
-                                      ),
-                                      Expanded(
-                                        child: GridView.builder(
-                                          padding: const EdgeInsets.all(8),
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: crossAxisCount,
-                                            childAspectRatio: MediaQuery.of(
-                                                            context)
-                                                        .size
-                                                        .width <
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: const Color(0xffF8F8F8),
+                        ),
+                        child: SizedBox(
+                          height: 500,
+                          width: 700,
+                          child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Inventory Options',
+                                    style: CheersStyles.h3ss,
+                                  ),
+                                  Expanded(
+                                    child: GridView.builder(
+                                      padding: const EdgeInsets.all(8),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: crossAxisCount,
+                                        childAspectRatio:
+                                            MediaQuery.of(context).size.width <
                                                     600
                                                 ? 2.0
                                                 : 1.8, // Increase this value
-                                          ),
-                                          itemCount: ingredients.length,
-                                          itemBuilder: (context, index) {
-                                            final item = ingredients[index];
-                                            return Card(
-                                              color: const Color(0xffF19A6F),
-                                              child: InkWell(
-                                                onTap: () =>
-                                                    _selectIngredient(item),
-                                                child: ListTile(
-                                                  title: Text(
-                                                    item['name'],
-                                                    style: const TextStyle(
-                                                      fontFamily:
-                                                          'Product Sans',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
+                                      ),
+                                      itemCount: ingredients.length,
+                                      itemBuilder: (context, index) {
+                                        final item = ingredients[index];
+                                        return Card(
+                                          color: const Color(0xffF19A6F),
+                                          child: InkWell(
+                                            onTap: () =>
+                                                _selectIngredient(item),
+                                            child: ListTile(
+                                              title: Text(
+                                                item['name'],
+                                                style: const TextStyle(
+                                                  fontFamily: 'Product Sans',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
                                                 ),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
-                        ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ),
                       ),
-                    ]),
-              ]),
-        ));
+                    ],
+                  ),
+                ]),
+          ]),
+    ));
   }
 }
